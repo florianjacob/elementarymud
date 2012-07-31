@@ -1,1 +1,8 @@
+# exclude build files
 *.class
+*.java
+/build
+/dist
+
+# exclude logs from the server
+/log
