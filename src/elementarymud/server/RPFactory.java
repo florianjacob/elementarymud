@@ -14,10 +14,10 @@ import marauroa.server.game.rp.RPObjectFactory;
  *
  * @author raignarok
  */
-public class SimpleMudRPFactory extends RPObjectFactory {
-	private static final Logger log = Log4J.getLogger(SimpleMudRPFactory.class);
+public class RPFactory extends RPObjectFactory {
+	private static final Logger log = Log4J.getLogger(RPFactory.class);
 
-	private static final SimpleMudRPFactory instance = new SimpleMudRPFactory();
+	private static final RPFactory instance = new RPFactory();
 
 	/**
 	 * returns the factory instance (this method is called
@@ -41,7 +41,7 @@ public class SimpleMudRPFactory extends RPObjectFactory {
 
 		final String name = clazz.getName();
 		if (name.equals("character")) {
-			return new SimpleMudCharacter(object);
+			return new Character(object);
 		} else if (name.equals("zone")) {
 			return new ZoneRPObject(object);
 		} else {

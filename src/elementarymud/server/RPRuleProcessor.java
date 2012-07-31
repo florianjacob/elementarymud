@@ -25,11 +25,11 @@ import marauroa.server.game.rp.RPServerManager;
  *
  * @author raignarok
  */
-public class SimpleMudRPRuleProcessor implements IRPRuleProcessor {
+public class RPRuleProcessor implements IRPRuleProcessor {
 
-	private static final Logger log = Log4J.getLogger(SimpleMudRPRuleProcessor.class);
-	private static final SimpleMudRPRuleProcessor instance = new SimpleMudRPRuleProcessor();
-	private SimpleMudWorld world = SimpleMudWorld.get();
+	private static final Logger log = Log4J.getLogger(RPRuleProcessor.class);
+	private static final RPRuleProcessor instance = new RPRuleProcessor();
+	private World world = World.get();
 	private RPServerManager manager;
 
 	//TODO: talk with marauroa / stendhal developers about this. Does this need to be synchronized?
@@ -86,15 +86,15 @@ public class SimpleMudRPRuleProcessor implements IRPRuleProcessor {
 	// TODO: caster heißt in Marauroa object
 	@Override
 	public void execute(RPObject caster, RPAction action) {
-		if (caster instanceof SimpleMudCharacter) {
-			SimpleMudCharacter character = (SimpleMudCharacter) caster;
+		if (caster instanceof Character) {
+			Character character = (Character) caster;
 
 			if (action.get("verb").equals("say")) {
 					character.say(action.get("remainder"));
 			} else if (action.get("verb").equals("goto")) {
 				IRPZone.ID zoneId = new IRPZone.ID(action.get("remainder"));
 				if (!world.hasRPZone(zoneId)) {
-					SimpleMudRPZone zone = new SimpleMudRPZone(action.get("remainder"),
+					RPZone zone = new RPZone(action.get("remainder"),
 							"Other Room", "a user-created room.");
 					world.addRPZone(zone);
 				}
@@ -142,9 +142,9 @@ public class SimpleMudRPRuleProcessor implements IRPRuleProcessor {
 			if (characterDAO.hasCharacter(trans, username, characterName)) {
 				return new CharacterResult(Result.FAILED_CHARACTER_EXISTS, characterName, template);
 			}
-			IRPZone zone = world.getRPZone(new IRPZone.ID("room"));
+			IRPZone zone = world.getRPZone(new IRPZone.ID(World.defaultZoneId));
 			// ignoring the template completely..
-			RPObject character = new SimpleMudCharacter(characterName, "seeker of the sword");
+			RPObject character = new Character(characterName, "seeker of the sword");
 			//TODO: Why does the zone need to be set here and in onInit()?
 			zone.assignRPObjectID(character);
 			characterDAO.addCharacter(username, characterName, character);

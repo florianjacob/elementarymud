@@ -7,7 +7,7 @@ import marauroa.common.game.RPObject;
  *
  * @author raignarok
  */
-public class ZoneRPObject extends SimpleMudRPObject {
+public class ZoneRPObject extends MudRPObject {
 
 	public ZoneRPObject(String name, String description) {
 		super(name, description);

@@ -10,8 +10,8 @@ import marauroa.common.game.RPObject;
  *
  * @author raignarok
  */
-public class SimpleMudRPObject extends RPObject {
-	private static final Logger log = Log4J.getLogger(SimpleMudRPObject.class);
+public class MudRPObject extends RPObject {
+	private static final Logger log = Log4J.getLogger(MudRPObject.class);
 
 	public static void generateRPClass() {
 		RPClass mudobject = new RPClass("mudobject");
@@ -19,14 +19,14 @@ public class SimpleMudRPObject extends RPObject {
 		mudobject.addAttribute("description", Definition.Type.STRING);
 	}
 
-	public SimpleMudRPObject(String name, String description) {
+	public MudRPObject(String name, String description) {
 		super();
 		setRPClass("mudobject");
 		put("name", name);
 		put("description", description);
 	}
 
-	public SimpleMudRPObject(RPObject template) {
+	public MudRPObject(RPObject template) {
 		super(template);
 		setRPClass("mudobject");
 	}

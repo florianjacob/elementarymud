@@ -9,13 +9,15 @@ import marauroa.server.game.rp.RPWorld;
  *
  * @author raignarok
  */
-public class SimpleMudWorld extends RPWorld {
-	private static final SimpleMudWorld instance = new SimpleMudWorld();
-	private static final Logger log = Log4J.getLogger(SimpleMudWorld.class);
+public class World extends RPWorld {
+	private static final World instance = new World();
+	private static final Logger log = Log4J.getLogger(World.class);
+
+	public static final String defaultZoneId = "room";
 
 	//TODO: andere get() falsch implementiert serverseitig?
 	//TODO: im Tutorial verdammt nochmal ändern! initialize() der Elternklasse muss aufgerufen werden.
-	public static SimpleMudWorld get() {
+	public static World get() {
 		return instance;
 	}	
 
@@ -29,12 +31,12 @@ public class SimpleMudWorld extends RPWorld {
 		PublicTextEvent.generateRPClass();
 		PrivateTextEvent.generateRPClass();
 
-		SimpleMudRPObject.generateRPClass();
-		SimpleMudCharacter.generateRPClass();
+		MudRPObject.generateRPClass();
+		Character.generateRPClass();
 		ZoneRPObject.generateRPClass();
 		RPClass.bakeAll();
 
-		SimpleMudRPZone zone = new SimpleMudRPZone("room", "Plain Room", "a nondescript room");
+		RPZone zone = new RPZone(defaultZoneId, "Plain Room", "a nondescript room");
 		addRPZone(zone);
 	}
 }

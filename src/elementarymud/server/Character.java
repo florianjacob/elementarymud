@@ -11,18 +11,18 @@ import marauroa.common.game.RPObject;
  *
  * @author raignarok
  */
-public class SimpleMudCharacter extends SimpleMudRPObject {
-	private static final Logger log = Log4J.getLogger(SimpleMudCharacter.class);
+public class Character extends MudRPObject {
+	private static final Logger log = Log4J.getLogger(Character.class);
 
 	private IRPZone zone;
 	private IRPZone lastZone;
 
-	public SimpleMudCharacter(String name, String description) {
+	public Character(String name, String description) {
 		super(name, description);
 		setRPClass("character");
 	}
 
-	public SimpleMudCharacter(RPObject template) {
+	public Character(RPObject template) {
 		super(template);
 		setRPClass("character");
 	}
