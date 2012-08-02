@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package elementarymud.server;
 
 import marauroa.common.Log4J;
@@ -40,9 +36,9 @@ public class RPFactory extends RPObjectFactory {
 		}
 
 		final String name = clazz.getName();
-		if (name.equals("character")) {
+		if (name.equals(Character.getRPClassName())) {
 			return new Character(object);
-		} else if (name.equals("zone")) {
+		} else if (name.equals(ZoneRPObject.getRPClassName())) {
 			return new ZoneRPObject(object);
 		} else {
 			return super.transform(object);

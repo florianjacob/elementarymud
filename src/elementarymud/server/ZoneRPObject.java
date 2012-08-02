@@ -9,18 +9,23 @@ import marauroa.common.game.RPObject;
  */
 public class ZoneRPObject extends MudRPObject {
 
+	public static final String RPCLASSNAME = "zone";
+
 	public ZoneRPObject(String name, String description) {
 		super(name, description);
-		setRPClass("zone");
+		setRPClass(RPCLASSNAME);
 	}
 
 	public ZoneRPObject(RPObject template) {
 		super(template);
-		setRPClass("zone");
 	}
 
 	public static void generateRPClass() {
-		RPClass zoneClass = new RPClass("zone");
-		zoneClass.isA("mudobject");
+		RPClass zoneClass = new RPClass(RPCLASSNAME);
+		zoneClass.isA(MudRPObject.getRPClassName());
+	}
+
+	public static String getRPClassName() {
+		return RPCLASSNAME;
 	}
 }

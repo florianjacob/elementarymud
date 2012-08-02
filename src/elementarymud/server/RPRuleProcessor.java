@@ -51,7 +51,7 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 	//TODO: in Marauroa heißt der Parameter object
 	@Override
 	public synchronized boolean onInit(RPObject character) throws RPObjectInvalidException {
-		IRPZone zone = world.getRPZone(new IRPZone.ID(("room")));
+		IRPZone zone = world.getRPZone(new IRPZone.ID(World.defaultZoneId));
 		zone.add(character);
 		return true;
 	}
@@ -103,7 +103,7 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 
 			} else if (action.get("verb").equals("desc")) {
 				world.modify(caster);
-				caster.put("description", action.get("remainder"));
+				character.setDescription(action.get("remainder"));
 			} else {
 				character.sendPrivateText("Unknown action verb " + action.get("verb"));
 			}

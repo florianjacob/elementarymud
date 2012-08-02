@@ -14,17 +14,18 @@ import marauroa.common.game.RPObject;
 public class Character extends MudRPObject {
 	private static final Logger log = Log4J.getLogger(Character.class);
 
+	private static final String RPCLASSNAME = "character";
+
 	private IRPZone zone;
 	private IRPZone lastZone;
 
 	public Character(String name, String description) {
 		super(name, description);
-		setRPClass("character");
+		setRPClass(RPCLASSNAME);
 	}
 
 	public Character(RPObject template) {
 		super(template);
-		setRPClass("character");
 	}
 
 	public void sendPrivateText(final String text) {
@@ -42,10 +43,14 @@ public class Character extends MudRPObject {
 	}
 
 	public static void generateRPClass() {
-		RPClass character = new RPClass("character");
-		character.isA("mudobject");
+		RPClass character = new RPClass(RPCLASSNAME);
+		character.isA(MudRPObject.getRPClassName());
 		character.addRPEvent("private_text", Definition.PRIVATE);
 		character.addRPEvent("public_text", Definition.STANDARD);
+	}
+
+	public static String getRPClassName() {
+		return RPCLASSNAME;
 	}
 
 	public void onAdded(final IRPZone zone) {
