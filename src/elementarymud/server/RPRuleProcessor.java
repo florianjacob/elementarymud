@@ -1,5 +1,6 @@
 package elementarymud.server;
 
+import elementarymud.server.rpobjects.Character;
 import java.sql.SQLException;
 import java.util.List;
 import marauroa.common.Log4J;
@@ -91,15 +92,14 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 
 			if (action.get("verb").equals("say")) {
 					character.say(action.get("remainder"));
-			} else if (action.get("verb").equals("goto")) {
-				IRPZone.ID zoneId = new IRPZone.ID(action.get("remainder"));
-				if (!world.hasRPZone(zoneId)) {
-					RPZone zone = new RPZone(action.get("remainder"),
-							"Other Room", "a user-created room.");
-					world.addRPZone(zone);
+			} else if (action.get("verb").equals("go")) {
+				String exit = action.get("remainder");
+				RPZone oldZone = (RPZone) character.getZone();
+				if (!oldZone.hasExit(exit)) {
+					character.sendPrivateText("Exit " + exit + " doesn't exist.");
 				}
 				world.modify(caster);
-				world.changeZone(action.get("remainder"), caster);
+				world.changeZone(oldZone.getExit(exit).getTargetZoneId(), caster);
 
 			} else if (action.get("verb").equals("desc")) {
 				world.modify(caster);

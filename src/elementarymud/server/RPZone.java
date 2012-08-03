@@ -1,5 +1,12 @@
 package elementarymud.server;
 
+import elementarymud.server.rpobjects.ZoneRPObject;
+import elementarymud.server.rpobjects.Character;
+import elementarymud.server.rpobjects.Exit;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.RPObject;
@@ -14,6 +21,8 @@ public class RPZone extends MarauroaRPZone {
 
 	private ZoneRPObject zoneRPObject;
 
+	private List<Exit> exits = new LinkedList<Exit>();
+
 	public RPZone(String zoneid, String name, String description) {
 		super(zoneid);
 
@@ -27,10 +36,11 @@ public class RPZone extends MarauroaRPZone {
 		super.add(object);
 		if (object instanceof Character) {
 			((Character) object).onAdded(this);
+		} else if (object instanceof Exit) {
+			exits.add((Exit) object);	
 		}
 		// in case the object is a player, this sends a sync perception to him
 		World.get().requestSync(object);
-		
 	}
 
 	@Override
@@ -38,10 +48,34 @@ public class RPZone extends MarauroaRPZone {
 		RPObject object = get(id);		
 		if (object instanceof Character) {
 			((Character) object).onRemoved(this);
+		} else if (object instanceof Exit) {
+			exits.remove((Exit) object);
 		}
 
 		return super.remove(id);
 
 	}
-	
+
+	public ZoneRPObject getZoneObject() {
+		return zoneRPObject;
+	}
+
+	public boolean hasExit(String exitName) {
+		for (Exit exit : exits) {
+			if (exit.getName().equals(exitName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Exit getExit(String exitName) {
+		for (Exit exit : exits) {
+			if (exit.getName().equals(exitName)) {
+				return exit;
+			}
+		}
+		return null;
+	}
+
 }

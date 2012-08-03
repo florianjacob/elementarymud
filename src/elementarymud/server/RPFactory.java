@@ -1,5 +1,7 @@
 package elementarymud.server;
 
+import elementarymud.server.rpobjects.ZoneRPObject;
+import elementarymud.server.rpobjects.Character;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.RPClass;

@@ -1,4 +1,4 @@
-package elementarymud.server;
+package elementarymud.server.rpobjects;
 
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
@@ -14,7 +14,7 @@ public class MudRPObject extends RPObject {
 	private static final Logger log = Log4J.getLogger(MudRPObject.class);
 
 	private static final String NAME = "name";
-	private static final String DESCRIPTION = "name";
+	private static final String DESCRIPTION = "description";
 	private static final String RPCLASSNAME = "mudobject";
 
 	public static void generateRPClass() {

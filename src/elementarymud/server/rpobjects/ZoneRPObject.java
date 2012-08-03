@@ -1,5 +1,6 @@
-package elementarymud.server;
+package elementarymud.server.rpobjects;
 
+import marauroa.common.game.Definition;
 import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
 
@@ -9,7 +10,7 @@ import marauroa.common.game.RPObject;
  */
 public class ZoneRPObject extends MudRPObject {
 
-	public static final String RPCLASSNAME = "zone";
+	private static final String RPCLASSNAME = "zone";
 
 	public ZoneRPObject(String name, String description) {
 		super(name, description);
