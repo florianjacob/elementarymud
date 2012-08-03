@@ -1,6 +1,5 @@
 # exclude build files
 *.class
-*.java
 /build
 /dist
 

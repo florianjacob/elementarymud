@@ -1,12 +1,10 @@
 package elementarymud.server;
 
-import elementarymud.server.rpobjects.ZoneRPObject;
 import elementarymud.server.rpobjects.Character;
 import elementarymud.server.rpobjects.Exit;
-import java.util.HashSet;
+import elementarymud.server.rpobjects.ZoneRPObject;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.RPObject;
