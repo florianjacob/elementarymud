@@ -33,8 +33,6 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 	private World world = World.get();
 	private RPServerManager manager;
 
-	//TODO: talk with marauroa / stendhal developers about this. Does this need to be synchronized?
-	// is it a problem when I don't load that lazily?
 	public static IRPRuleProcessor get() {
 		return instance;
 	}

@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import marauroa.common.game.RPAction;
 import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
@@ -56,6 +55,14 @@ public class CommandInterpreter {
 						output.append(".");
 					}	
 
+					List<RPObject> entities = getEntities();
+					if (!entities.isEmpty()) {
+						output.append("\n");
+						output.append("You see ");
+						appendPrettyEntityNameList(output, entities);
+						output.append(".");
+					}
+			
 					ui.writeln(output.toString());
 				} else {
 					// look at something specific
@@ -140,6 +147,29 @@ public class CommandInterpreter {
 		appendDescription(builder, last);
     }
 
+
+    private void appendPrettyEntityNameList(StringBuilder builder, List<RPObject> list) {
+        if (list.isEmpty()) {
+            return;
+        }
+
+        int lastIndex = list.size() - 1;
+        RPObject last = list.get(lastIndex);
+
+        Iterator<RPObject> it = list.subList(0, lastIndex).iterator();
+        if (it.hasNext()) {
+            RPObject other = it.next();
+            builder.append("a ").append(other.get("name"));
+            while (it.hasNext()) {
+                other = it.next();
+                builder.append(", ");
+                builder.append("a ").append(other.get("name"));
+            }
+            builder.append(" and ");
+        }
+        builder.append("a ").append(last.get("name"));
+    }	
+
 	private StringBuilder appendDescription(StringBuilder out, RPObject object) {
 		if (object.instanceOf(RPClass.getRPClass("character"))) {
 			out.append(object.get("name")).append(", ").append(object.get("description"));
@@ -188,5 +218,27 @@ public class CommandInterpreter {
 		}
 
 		return Collections.unmodifiableList(exits);
+	}
+
+	/**
+	 * @return a list of everything excluding players, rooms and exits
+	 */
+	private List<RPObject> getEntities() {
+		Map<RPObject.ID, RPObject> zoneObjects = Client.get().getZoneObjects();
+		ArrayList<RPObject> entities = new ArrayList<RPObject>(zoneObjects.size());
+		for (RPObject object : zoneObjects.values()) {
+			if (!object.instanceOf(RPClass.getRPClass("exit"))
+					&& !object.instanceOf(RPClass.getRPClass("character"))
+					&& !object.instanceOf(RPClass.getRPClass("zone"))) {
+				entities.add(object);	
+			}
+		}
+
+		if (entities.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return Collections.unmodifiableList(entities);
+
 	}
 }

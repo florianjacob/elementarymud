@@ -54,6 +54,7 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        outputTextArea.setEditable(false);
         outputTextArea.setColumns(20);
         outputTextArea.setRows(5);
         outputScrollPane.setViewportView(outputTextArea);

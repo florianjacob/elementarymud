@@ -1,0 +1,21 @@
+== Game Tasks ==
+ * Game Objects apart from Characters, e.g. swords on the ground or world stuff like benches or trees
+    * generiere RPCLASSNAME aus dem eigentlichen Klassennamen..?
+ * Inventory to pickup takeable items
+ * NPCs to speak to
+ * Fighting system, Mobs to kill
+
+
+== Marauroa Tasks ==
+ * World.add(), RPZone.add(), what to use when and where..? Stendhal doesn't seem to use any of that methods in world.
+    =>  ask in irc channel about it, point out comment in line 224 seems plain wrong, but something that actually
+        should be done.
+
+ * synchronized get() etc., does it need to be synchronized? does it need to be loaded lazily?
+  * elementarymud.RPRuleProcessor in public static IRPRuleProcessor get()
+  * elementarymud.World in public static World get()
+
+ * World.onInit() vs. World.initialize()
+
+ * several method parameters in RPRuleProcessor can have better names than object, e.g. caster or character
+    => Do the fixes, push them to a cloned repository on gitorious and then request the merge manually as a ticket

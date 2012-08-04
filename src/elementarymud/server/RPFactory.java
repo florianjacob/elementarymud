@@ -1,7 +1,12 @@
 package elementarymud.server;
 
+import elementarymud.server.rpobjects.Bench;
 import elementarymud.server.rpobjects.ZoneRPObject;
 import elementarymud.server.rpobjects.Character;
+import elementarymud.server.rpobjects.Exit;
+import elementarymud.server.rpobjects.LightPost;
+import elementarymud.server.rpobjects.Sword;
+import elementarymud.server.rpobjects.Torch;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.RPClass;
@@ -42,7 +47,18 @@ public class RPFactory extends RPObjectFactory {
 			return new Character(object);
 		} else if (name.equals(ZoneRPObject.getRPClassName())) {
 			return new ZoneRPObject(object);
+		} else if (name.equals(Bench.getRPClassName())) {
+			return new Bench(object);
+		} else if (name.equals(Exit.getRPClassName())) {
+			return new Exit(object);
+		} else if (name.equals(LightPost.getRPClassName())) {
+			return new LightPost(object);
+		} else if (name.equals(Torch.getRPClassName())) {
+			return new Torch(object);
+		} else if (name.equals(Sword.getRPClassName())) {
+			return new Sword(object);	
 		} else {
+			log.warn("No suitable transformation found for rpclass: " + name);
 			return super.transform(object);
 		}
 	}

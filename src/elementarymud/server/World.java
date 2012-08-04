@@ -1,9 +1,13 @@
 package elementarymud.server;
 
+import elementarymud.server.rpobjects.Bench;
 import elementarymud.server.rpobjects.ZoneRPObject;
 import elementarymud.server.rpobjects.Character;
 import elementarymud.server.rpobjects.Exit;
+import elementarymud.server.rpobjects.LightPost;
 import elementarymud.server.rpobjects.MudRPObject;
+import elementarymud.server.rpobjects.Sword;
+import elementarymud.server.rpobjects.Torch;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.RPClass;
@@ -40,6 +44,10 @@ public class World extends RPWorld {
 		Character.generateRPClass();
 		ZoneRPObject.generateRPClass();
 		Exit.generateRPClass();
+		Bench.generateRPClass();
+		LightPost.generateRPClass();
+		Sword.generateRPClass();
+		Torch.generateRPClass();
 		RPClass.bakeAll();
 
 		RPZone plainRoom = new RPZone(defaultZoneId, "Plain Room", "a nondescript room");
@@ -50,5 +58,10 @@ public class World extends RPWorld {
 		
 		plainRoom.add(new Exit("north", " a small path to the north", cave.getID()));
 		cave.add(new Exit("south", "a small path to the south", plainRoom.getID()));
+
+		plainRoom.add(new Bench());
+		plainRoom.add(new LightPost());
+		cave.add(new Sword());
+		cave.add(new Torch());
 	}
 }
