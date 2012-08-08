@@ -1,6 +1,5 @@
 package elementarymud.server.rpobjects;
 
-import marauroa.common.game.Definition;
 import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
 

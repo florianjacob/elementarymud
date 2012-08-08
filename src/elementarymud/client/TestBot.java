@@ -1,5 +1,6 @@
 package elementarymud.client;
 
+import elementarymud.client.inputparsing.CommandInterpreter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;

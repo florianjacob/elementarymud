@@ -4,6 +4,8 @@
  * Inventory to pickup takeable items
  * NPCs to speak to
  * Fighting system, Mobs to kill
+ * syntax analysis of commands, reffering to "learn python the hard way"
+ * unit tests
 
 
 == Marauroa Tasks ==

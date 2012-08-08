@@ -2,6 +2,7 @@ package elementarymud.server.rpobjects;
 
 import elementarymud.server.PrivateTextEvent;
 import elementarymud.server.PublicTextEvent;
+import elementarymud.server.rpobjects.Character;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.Definition;

@@ -1,12 +1,12 @@
 package elementarymud.server;
 
 import elementarymud.server.rpobjects.Bench;
-import elementarymud.server.rpobjects.ZoneRPObject;
 import elementarymud.server.rpobjects.Character;
 import elementarymud.server.rpobjects.Exit;
 import elementarymud.server.rpobjects.LightPost;
 import elementarymud.server.rpobjects.Sword;
 import elementarymud.server.rpobjects.Torch;
+import elementarymud.server.rpobjects.ZoneRPObject;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.RPClass;

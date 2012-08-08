@@ -1,5 +1,7 @@
 package elementarymud.client;
 
+import elementarymud.client.inputparsing.CommandInterpreter;
+
 /**
  * A UI provides input and receives output.
  *

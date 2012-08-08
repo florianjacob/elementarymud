@@ -1,0 +1,40 @@
+go north
+enter shop
+enter the shop
+enter north
+south
+s
+
+say hello how are you
+say to raignarok hoi there
+
+look
+look at raignarok
+look north
+look door
+look at the bench
+
+attack
+attack goblin
+attack the goblin
+stop
+
+
+take sword
+drop sword
+hold sword
+unhold sword
+
+wear armour
+remove armour
+
+i
+inventory
+
+
+
+read sign
+read plaque
+
+light torch
+extinguish torch

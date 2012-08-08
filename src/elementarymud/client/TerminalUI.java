@@ -4,6 +4,7 @@
  */
 package elementarymud.client;
 
+import elementarymud.client.inputparsing.CommandInterpreter;
 import javax.swing.JScrollBar;
 
 /**

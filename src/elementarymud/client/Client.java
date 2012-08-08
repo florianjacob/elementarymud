@@ -1,7 +1,10 @@
 package elementarymud.client;
 
+import elementarymud.client.inputparsing.CommandInterpreter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +13,7 @@ import marauroa.client.ClientFramework;
 import marauroa.client.net.PerceptionHandler;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
+import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
 import marauroa.common.net.message.MessageS2CPerception;
 import marauroa.common.net.message.TransferContent;
@@ -63,6 +67,7 @@ public class Client extends ClientFramework implements ActionListener {
 			handler.apply(message, zoneObjects);
 		} catch (Exception e) {
 			// Something weird happened while applying perception
+			e.printStackTrace();
 		}
 	}
 
@@ -144,4 +149,40 @@ public class Client extends ClientFramework implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		loop(0);
 	}
+
+	public List<RPObject> getExits() {
+		ArrayList<RPObject> exits = new ArrayList<RPObject>(zoneObjects.size());
+		for (RPObject object : zoneObjects.values()) {
+			if (object.instanceOf(RPClass.getRPClass("exit"))) {
+				exits.add(object);	
+			}
+		}
+
+		if (exits.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return Collections.unmodifiableList(exits);
+	}	
+
+	/**
+	 * @return a list of everything excluding players, rooms and exits
+	 */
+	public List<RPObject> getEntities() {
+		ArrayList<RPObject> entities = new ArrayList<RPObject>(zoneObjects.size());
+		for (RPObject object : zoneObjects.values()) {
+			if (!object.instanceOf(RPClass.getRPClass("exit"))
+					&& !object.instanceOf(RPClass.getRPClass("character"))
+					&& !object.instanceOf(RPClass.getRPClass("zone"))) {
+				entities.add(object);	
+			}
+		}
+
+		if (entities.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return Collections.unmodifiableList(entities);
+
+	}	
 }
