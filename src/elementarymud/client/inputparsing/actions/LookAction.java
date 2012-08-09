@@ -1,13 +1,18 @@
-package elementarymud.client.inputparsing;
+package elementarymud.client.inputparsing.actions;
 
 import elementarymud.client.Client;
 import elementarymud.client.MyCharacter;
 import elementarymud.client.UI;
+import elementarymud.client.inputparsing.Command;
+import elementarymud.client.inputparsing.CommandParser;
+import elementarymud.client.inputparsing.Word;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
 
@@ -20,7 +25,10 @@ public class LookAction implements Action {
 	@Override
 	public void execute(Command sentence) {
 		UI ui = Client.get().getUI();
-		if (!sentence.hasObject()) {
+		if (sentence.getRemainder() != null) {
+			// there was a part following we couldn't parse..
+			ui.writeln("Try looking at something else.");
+		} else if (!sentence.hasObject()) {
 			MyCharacter myCharacter = Client.get().getMyCharacter();
 			// just look around in the zone
 			RPObject zone = myCharacter.getZone();
@@ -128,14 +136,6 @@ public class LookAction implements Action {
 		builder.append("a ").append(last.get("name"));
 	}
 
-	private StringBuilder appendDescription(StringBuilder out, RPObject object) {
-		if (object.instanceOf(RPClass.getRPClass("character"))) {
-			out.append(object.get("name")).append(", ").append(object.get("description"));
-		}
-		out.append(object.get("description"));
-		return out;
-	}
-
 	/**
 	 * Returns a list of players in this room excluding the given player.
 	 *
@@ -143,13 +143,12 @@ public class LookAction implements Action {
 	 * @return the list of players
 	 */
 	private List<RPObject> getPlayersExcluding(RPObject player) {
-		MyCharacter myCharacter = Client.get().getMyCharacter();
 		Map<RPObject.ID, RPObject> zoneObjects = Client.get().getZoneObjects();
 
 		ArrayList<RPObject> otherPlayers = new ArrayList<RPObject>(zoneObjects.size());
 		for (RPObject object : zoneObjects.values()) {
 			if (object.instanceOf(RPClass.getRPClass("character"))
-					&& !object.getID().equals(myCharacter.getCharacter().getID())) {
+					&& !object.getID().equals(player.getID())) {
 				otherPlayers.add(object);
 			}
 		}
@@ -159,5 +158,18 @@ public class LookAction implements Action {
 		}
 
 		return Collections.unmodifiableList(otherPlayers);
+	}
+
+	@Override
+	public Set<String> actionVerbs() {
+		Set<String> verbs = new HashSet<String>();
+		verbs.add("look");	
+		return verbs;
+	}
+
+	@Override
+	public void parse(CommandParser parser, Command command) {
+		Word object = parser.nextObject();
+		command.setObject(object);
 	}
 }

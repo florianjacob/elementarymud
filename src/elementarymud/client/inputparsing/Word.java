@@ -1,5 +1,6 @@
 package elementarymud.client.inputparsing;
 
+import elementarymud.client.inputparsing.actions.Action;
 import marauroa.common.game.RPObject;
 
 /**

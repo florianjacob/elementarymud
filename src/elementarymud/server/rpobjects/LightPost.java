@@ -20,7 +20,7 @@ public class LightPost extends MudRPObject {
 	private static final String RPCLASSNAME = "lightpost";	
 
 	public LightPost() {
-		super("lightpost", "a mossy iron lightpost. It still works");
+		super("lightpost", "post", "a mossy iron lightpost. It still works");
 		setRPClass(RPCLASSNAME);
 	}
 

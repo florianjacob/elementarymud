@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package elementarymud.server.rpobjects;
 
 import marauroa.common.Log4J;
@@ -13,17 +9,17 @@ import marauroa.common.game.RPObject;
  *
  * @author raignarok
  */
-public class Sword extends MudRPObject {
-	private static final Logger log = Log4J.getLogger(Sword.class);
+public class ShortSword extends MudRPObject {
+	private static final Logger log = Log4J.getLogger(ShortSword.class);
 
-	private static final String RPCLASSNAME = "sword";
+	private static final String RPCLASSNAME = "shortsword";
 
-	public Sword() {
-		super("sword", "a mighty sword");
+	public ShortSword() {
+		super("short sword", "sword", "a excellent short sword");
 		setRPClass(RPCLASSNAME);
 	}
 
-	public Sword(RPObject template) {
+	public ShortSword(RPObject template) {
 		super(template);
 	}
 

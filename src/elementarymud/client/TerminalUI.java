@@ -13,8 +13,6 @@ import javax.swing.JScrollBar;
  */
 public class TerminalUI extends javax.swing.JFrame implements UI {
 
-	private CommandInterpreter commandInterpreter;
-
 	/**
 	 * Creates new form TerminalUI
 	 */
@@ -100,7 +98,7 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
 	private void inputTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputTextFieldActionPerformed
 		String input = inputTextField.getText();
 		inputTextField.setText("");
-		commandInterpreter.onInput(input);
+		CommandInterpreter.onInput(input);
 	}//GEN-LAST:event_inputTextFieldActionPerformed
 
 	@Override
@@ -178,9 +176,4 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
     private javax.swing.JTextArea outputTextArea;
     private javax.swing.JLabel promptLabel;
     // End of variables declaration//GEN-END:variables
-
-	@Override
-	public void setCommandInterpreter(CommandInterpreter commandInterpreter) {
-		this.commandInterpreter = commandInterpreter;
-	}
 }

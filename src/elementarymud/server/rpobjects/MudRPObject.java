@@ -14,20 +14,27 @@ public class MudRPObject extends RPObject {
 	private static final Logger log = Log4J.getLogger(MudRPObject.class);
 
 	private static final String NAME = "name";
+	private static final String SHORTNAME = "shortname";
 	private static final String DESCRIPTION = "description";
 	private static final String RPCLASSNAME = "mudobject";
 
 	public static void generateRPClass() {
 		RPClass mudobject = new RPClass(RPCLASSNAME);
 		mudobject.addAttribute(NAME, Definition.Type.STRING);
+		mudobject.addAttribute(SHORTNAME, Definition.Type.STRING);
 		mudobject.addAttribute(DESCRIPTION, Definition.Type.STRING);
 	}
 
-	public MudRPObject(String name, String description) {
+	public MudRPObject(String name, String shortname, String description) {
 		super();
 		setRPClass(RPCLASSNAME);
 		put(NAME, name);
+		put(SHORTNAME, shortname);
 		put(DESCRIPTION, description);
+	}
+
+	public MudRPObject(String name, String description) {
+		this(name, name, description);
 	}
 
 	public MudRPObject(RPObject template) {
@@ -44,6 +51,14 @@ public class MudRPObject extends RPObject {
 
 	public void setName(String name) {
 		put(NAME, name);
+	}
+
+	public String getShortName() {
+		return get(SHORTNAME);
+	}	
+
+	public void setShortName(String shortName) {
+		put(SHORTNAME, shortName);
 	}
 
 	public String getDescription() {

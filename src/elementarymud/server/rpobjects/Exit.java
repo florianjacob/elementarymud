@@ -17,8 +17,8 @@ public class Exit extends MudRPObject {
 	private static final String RPCLASSNAME = "exit";
 	private static final String TARGETZONEID = "targetzoneid";
 
-	public Exit(String name, String description, IRPZone.ID targetZoneId) {
-		super(name, description);
+	public Exit(String name, String shortName, String description, IRPZone.ID targetZoneId) {
+		super(name, shortName, description);
 		setRPClass(RPCLASSNAME);
 		put(TARGETZONEID, targetZoneId.getID());
 	}

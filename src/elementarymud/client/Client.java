@@ -30,7 +30,6 @@ public class Client extends ClientFramework implements ActionListener {
 	private Map<RPObject.ID, RPObject> zoneObjects;
 	private String[] availableCharacters;
 	private UI ui;
-	private CommandInterpreter commandInterpreter;
 	private MyCharacter myCharacter = new MyCharacter();
 	private Timer timer;
 	private static Logger log = Log4J.getLogger(Client.class);
@@ -44,7 +43,6 @@ public class Client extends ClientFramework implements ActionListener {
 		zoneObjects = new HashMap<RPObject.ID, RPObject>();
 		listener = new PerceptionListener();
 		handler = new PerceptionHandler(listener);
-		commandInterpreter = new CommandInterpreter();
 	    timer = new Timer(300, this);
 		timer.setInitialDelay(500);
 	}
@@ -55,10 +53,6 @@ public class Client extends ClientFramework implements ActionListener {
 
 	public UI getUI() {
 		return ui;
-	}
-
-	public CommandInterpreter getCommandInterpreter() {
-		return commandInterpreter;
 	}
 
 	@Override
@@ -135,7 +129,6 @@ public class Client extends ClientFramework implements ActionListener {
 	 * @param ui 
 	 */
 	public void start(UI ui) {
-		ui.setCommandInterpreter(commandInterpreter);
 		this.ui = ui;
 		timer.start();
 		ui.start();

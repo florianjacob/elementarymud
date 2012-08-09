@@ -10,6 +10,7 @@ import marauroa.common.game.AccountResult;
 import marauroa.common.game.CharacterResult;
 import marauroa.common.game.IRPZone;
 import marauroa.common.game.RPAction;
+import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
 import marauroa.common.game.RPObjectInvalidException;
 import marauroa.common.game.RPObjectNotFoundException;
@@ -50,7 +51,7 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 	//TODO: in Marauroa heißt der Parameter object
 	@Override
 	public synchronized boolean onInit(RPObject character) throws RPObjectInvalidException {
-		IRPZone zone = world.getRPZone(new IRPZone.ID(World.defaultZoneId));
+		IRPZone zone = world.getRPZone(World.defaultZoneId);
 		zone.add(character);
 		return true;
 	}
@@ -89,9 +90,21 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 			Character character = (Character) caster;
 
 			if (action.get("verb").equals("say")) {
-					character.say(action.get("remainder"));
+				character.say(action.get("remainder"));
+			} else if (action.get("verb").equals("tell") ||
+					action.get("verb").equals("sayto")) {
+				IRPZone.ID zoneId = character.getZone().getID();
+				int objectId = Integer.parseInt(action.get("object"));
+				RPObject.ID targetId = new RPObject.ID(objectId, zoneId);
+				RPObject target = character.getZone().get(targetId);
+				if (target == null) {
+					character.sendPrivateText("Your target isn't here.");
+				} else {
+					//TODO: proper targeted speaking here!
+					character.say("to " + target.get("name") + ": " + action.get("remainder"));
+				}
 			} else if (action.get("verb").equals("go")) {
-				String exit = action.get("remainder");
+				String exit = action.get("object");
 				RPZone oldZone = (RPZone) character.getZone();
 				if (!oldZone.hasExit(exit)) {
 					character.sendPrivateText("Exit " + exit + " doesn't exist.");
@@ -140,7 +153,7 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 			if (characterDAO.hasCharacter(trans, username, characterName)) {
 				return new CharacterResult(Result.FAILED_CHARACTER_EXISTS, characterName, template);
 			}
-			IRPZone zone = world.getRPZone(new IRPZone.ID(World.defaultZoneId));
+			IRPZone zone = world.getRPZone(World.defaultZoneId);
 			// ignoring the template completely..
 			RPObject character = new Character(characterName, "seeker of the sword");
 			//TODO: Why does the zone need to be set here and in onInit()?

@@ -1,5 +1,6 @@
 package elementarymud.client;
 
+import elementarymud.client.inputparsing.CommandInterpreter;
 import java.util.Map;
 import marauroa.client.net.IPerceptionListener;
 import marauroa.common.Log4J;
@@ -87,7 +88,7 @@ public class PerceptionListener implements IPerceptionListener {
 
 		if (myCharacter.hasChangedZone()) {
 			// execute a look command everytime we get in a new zone and the zone is synced completely
-			Client.get().getCommandInterpreter().onInput("look");
+			CommandInterpreter.onInput("look");
 			myCharacter.zoneChangeHandled();
 		}
 		return false;

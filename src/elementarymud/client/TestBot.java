@@ -11,7 +11,6 @@ import javax.swing.Timer;
  */
 public class TestBot implements UI, ActionListener {
 
-	private CommandInterpreter commandInterpreter;
 	private Timer timer;
 	private int counter = 500;
 
@@ -24,7 +23,7 @@ public class TestBot implements UI, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		commandInterpreter.onInput("say This is TestBot, running and talking for " + counter + "ms.");
+		CommandInterpreter.onInput("say This is TestBot, running and talking for " + counter + "ms.");
 		counter += 1000;
 	}
 
@@ -37,10 +36,5 @@ public class TestBot implements UI, ActionListener {
 	public void writeln(String text) {
 		write(text);
 		System.out.println();
-	}
-
-	@Override
-	public void setCommandInterpreter(CommandInterpreter commandInterpreter) {
-		this.commandInterpreter = commandInterpreter;
 	}
 }

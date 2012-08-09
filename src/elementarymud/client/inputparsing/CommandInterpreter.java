@@ -1,44 +1,32 @@
 package elementarymud.client.inputparsing;
 
 import elementarymud.client.Client;
-import elementarymud.client.MyCharacter;
-import elementarymud.client.UI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import marauroa.common.game.RPAction;
-import marauroa.common.game.RPClass;
-import marauroa.common.game.RPObject;
+import elementarymud.client.inputparsing.actions.Action;
 
 /**
+ * The CommandInterpreter class provides an interface to the whole
+ * command parsing subsystem.
  *
  * @author raignarok
  */
 public class CommandInterpreter {
 
-	private static final Map<String, Action> actions = new HashMap<String, Action>();
+	/**
+	 * Call this method with the raw input as entered by the user
+	 * to parse and execute the command.
+	 * If parsing fails, this method prints out errors to the user.
+	 * 
+	 * @param rawInput the raw input as entered by the user
+	 */
+	public static void onInput(String rawInput) {
+		CommandParser parser = new CommandParser(rawInput);
+		Command command = parser.parse();
 
-	static {
-		actions.put("look", new LookAction());
-		actions.put("go", new MoveAction());
-		actions.put("say", new SayAction());
+		if (command != null) {
+			Action action = command.getVerb().getAction();
+			action.execute(command);
+		} else {
+			Client.get().getUI().writeln("Try something else.");
+		}
 	}
-
-	public Action getAction(String name) {
-		return actions.get(name);
-	}
-
-	public void onInput(String input) {
-		Command sentence = Command.parseCommand(CommandScanner.scan(input), input);
-
-		Action action = sentence.getVerb().getAction();
-		action.execute(sentence);
-	}
-
-
-
 }
