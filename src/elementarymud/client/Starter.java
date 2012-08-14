@@ -58,7 +58,6 @@ public class Starter {
 			}
 			
 			client.chooseCharacter(username);
-			client.setCharacterName(username);
 		} catch (Exception e) {
 			log.error("Problem during login and/or character creation: " + e);
 			System.exit(1);

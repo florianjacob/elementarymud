@@ -48,7 +48,6 @@ public class Word {
 	}
 
 	public enum WordType {
-
 		DIRECTION,
 		VERB,
 		STOPWORD,

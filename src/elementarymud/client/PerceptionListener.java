@@ -14,7 +14,7 @@ public class PerceptionListener implements IPerceptionListener {
 	private static final Logger log = Log4J.getLogger(PerceptionListener.class);
 
 	@Override
-	public boolean onAdded(RPObject object) {
+	public boolean onAdded(final RPObject object) {
 		MyCharacter myCharacter = Client.get().getMyCharacter();
 		log.info("onAdded: " + object);
 		if (myCharacter.isCharacter(object)) {
@@ -28,7 +28,7 @@ public class PerceptionListener implements IPerceptionListener {
 	}
 
 	@Override
-	public boolean onModifiedAdded(RPObject object, RPObject changes) {
+	public boolean onModifiedAdded(final RPObject object, final RPObject changes) {
 		MyCharacter myCharacter = Client.get().getMyCharacter();
 		log.info("onModifiedAdded: " + object + " changes: " + changes);
 		for (RPEvent event : changes.events()) {
@@ -41,13 +41,13 @@ public class PerceptionListener implements IPerceptionListener {
 	}
 
 	@Override
-	public boolean onModifiedDeleted(RPObject object, RPObject changes) {
+	public boolean onModifiedDeleted(final RPObject object, final RPObject changes) {
 		log.info("onModifiedDeleted: " + object + " changes: " + changes);
 		return false;
 	}
 
 	@Override
-	public boolean onDeleted(RPObject object) {
+	public boolean onDeleted(final RPObject object) {
 		Map<RPObject.ID, RPObject> zoneObjects = Client.get().getZoneObjects();
 		log.info("onDeleted: " + object);
 		if (object.instanceOf(RPClass.getRPClass("character"))) {
@@ -58,7 +58,7 @@ public class PerceptionListener implements IPerceptionListener {
 	}
 
 	@Override
-	public boolean onMyRPObject(RPObject added, RPObject deleted) {
+	public boolean onMyRPObject(final RPObject added, final RPObject deleted) {
 		// onMyRPObject gets called everytime our own RPObject changes so we know that it changed
 		// but this happens after onAdded() was already called with our RPObject and all public attributes
 		// added and deleted don't contain any public attributes except id and zone

@@ -21,17 +21,17 @@ public class ActionRepository {
 		registerAction(new SayAction());
 	}
 
-	private void registerAction(Action action) {
+	private void registerAction(final Action action) {
 		for (String verb : action.actionVerbs()) {
 			actions.put(verb, action);
 		}
 	}
 
-	public boolean hasAction(String name) {
+	public boolean hasAction(final String name) {
 		return actions.containsKey(name);
 	}
 
-	public Action getAction(String name) {
+	public Action getAction(final String name) {
 		return actions.get(name);
 	}
 }

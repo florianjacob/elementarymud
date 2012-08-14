@@ -6,8 +6,8 @@ package elementarymud.client;
  * @author raignarok
  */
 public interface UI {
-	public void write(String text);	
-	public void writeln(String text);
+	public void write(final String text);	
+	public void writeln(final String text);
 	/**
 	 * Starts UI event loops, make UI visible etc.
 	 */

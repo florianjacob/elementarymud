@@ -1,5 +1,6 @@
 package elementarymud.client.inputparsing;
 
+import elementarymud.client.inputparsing.Word.WordType;
 import elementarymud.client.inputparsing.actions.Action;
 import elementarymud.client.inputparsing.actions.ActionRepository;
 import java.util.LinkedList;
@@ -24,15 +25,15 @@ public class CommandParser {
 		words = CommandScanner.scan(rawInput);
 	}
 
-	public void skip(Word.WordType type) {
+	public void skip(WordType type) {
 		while (!words.isEmpty() && words.peek().getType().equals(type)) {
 			words.pop();
 		}
 	}
 
 	public Word nextVerb() {
-		skip(Word.WordType.STOPWORD);
-		if (!words.isEmpty() && words.peek().getType().equals(Word.WordType.VERB)) {
+		skip(WordType.STOPWORD);
+		if (!words.isEmpty() && words.peek().getType().equals(WordType.VERB)) {
 			return words.pop();
 		} else {
 			return null;
@@ -40,11 +41,11 @@ public class CommandParser {
 	}
 
 	public Word nextObject() {
-		skip(Word.WordType.STOPWORD);
+		skip(WordType.STOPWORD);
 		Word nextObject = null;
 		if (!words.isEmpty()) {
-			Word.WordType nextType = words.peek().getType();
-			if (nextType.equals(Word.WordType.NOUN) || nextType.equals(Word.WordType.DIRECTION)) {
+			WordType nextType = words.peek().getType();
+			if (nextType.equals(WordType.NOUN) || nextType.equals(WordType.DIRECTION)) {
 				nextObject = words.pop();
 			}
 		}
@@ -85,7 +86,7 @@ public class CommandParser {
 	protected Command parse() {
 		Word verb = nextVerb();
 
-		Action action = null;
+		Action action;
 		if (verb != null) {
 			action = verb.getAction();
 		} else if (words.peek().getType().equals(Word.WordType.DIRECTION)) {

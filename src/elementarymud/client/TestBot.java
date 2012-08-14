@@ -22,18 +22,18 @@ public class TestBot implements UI, ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent ae) {
+	public void actionPerformed(final ActionEvent ae) {
 		CommandInterpreter.onInput("say This is TestBot, running and talking for " + counter + "ms.");
 		counter += 1000;
 	}
 
 	@Override
-	public void write(String text) {
+	public void write(final String text) {
 		System.out.print(text);
 	}
 
 	@Override
-	public void writeln(String text) {
+	public void writeln(final String text) {
 		write(text);
 		System.out.println();
 	}

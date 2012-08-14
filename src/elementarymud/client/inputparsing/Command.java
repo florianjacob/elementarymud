@@ -17,7 +17,7 @@ public class Command {
 	private Word object;
 	private String remainder;
 
-	public Command(Word verb) {
+	public Command(final Word verb) {
 		this.verb = verb;
 	}
 
@@ -33,7 +33,7 @@ public class Command {
 		return object;
 	}
 
-	public void setObject(Word object) {
+	public void setObject(final Word object) {
 		this.object = object;
 	}
 
@@ -45,7 +45,7 @@ public class Command {
 		return remainder;
 	}
 
-	public void setRemainder(String remainder) {
+	public void setRemainder(final String remainder) {
 		this.remainder = remainder;
 	}
 }

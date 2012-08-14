@@ -1,6 +1,5 @@
 package elementarymud.client;
 
-import elementarymud.client.inputparsing.CommandInterpreter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -9,12 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.Timer;
+import marauroa.client.BannedAddressException;
 import marauroa.client.ClientFramework;
+import marauroa.client.TimeoutException;
 import marauroa.client.net.PerceptionHandler;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
+import marauroa.common.net.InvalidVersionException;
 import marauroa.common.net.message.MessageS2CPerception;
 import marauroa.common.net.message.TransferContent;
 
@@ -24,21 +26,21 @@ import marauroa.common.net.message.TransferContent;
  */
 public class Client extends ClientFramework implements ActionListener {
 
-	private PerceptionHandler handler;
-	private PerceptionListener listener;
+	private final PerceptionHandler handler;
+	private final PerceptionListener listener;
 	private static final Client instance = new Client();
-	private Map<RPObject.ID, RPObject> zoneObjects;
+	private final Map<RPObject.ID, RPObject> zoneObjects;
 	private String[] availableCharacters;
 	private UI ui;
 	private MyCharacter myCharacter = new MyCharacter();
-	private Timer timer;
-	private static Logger log = Log4J.getLogger(Client.class);
+	private final Timer timer;
+	private static final Logger log = Log4J.getLogger(Client.class);
 
 	public static Client get() {
 		return instance;
 	}
 
-	protected Client() {
+	private Client() {
 		super("log4j.properties");
 		zoneObjects = new HashMap<RPObject.ID, RPObject>();
 		listener = new PerceptionListener();
@@ -75,12 +77,12 @@ public class Client extends ClientFramework implements ActionListener {
 	}
 
 	@Override
-	protected void onAvailableCharacters(String[] characters) {
+	protected void onAvailableCharacters(final String[] characters) {
 		availableCharacters = characters;
 	}
 
 	@Override
-	protected void onServerInfo(String[] info) {
+	protected void onServerInfo(final String[] info) {
 		for (String s : info) {
 			ui.writeln(s);
 		}
@@ -100,19 +102,14 @@ public class Client extends ClientFramework implements ActionListener {
 	protected void onPreviousLogins(List<String> previousLogins) {
 	}
 
-	/**
-	 * This has to be called after character selection to store the character name.
-	 * Makes no sense to do this way, but still required. Should be done otherwise.
-	 * @param characterName 
-	 */
-	public void setCharacterName(String characterName) {
-		myCharacter.setCharacterName(characterName);
-	}
-	/**
-	 * @return 
-	 */
-	public String getCharacterName() {
-		return myCharacter.getCharacterName();
+	@Override
+	public synchronized boolean chooseCharacter(String characterName)
+			throws TimeoutException, InvalidVersionException, BannedAddressException {
+		boolean successful = super.chooseCharacter(characterName);
+		if (successful) {
+			myCharacter.setCharacterName(characterName);
+		}
+		return successful;
 	}
 
 	public MyCharacter getMyCharacter() {
@@ -128,7 +125,7 @@ public class Client extends ClientFramework implements ActionListener {
 	 * 
 	 * @param ui 
 	 */
-	public void start(UI ui) {
+	public void start(final UI ui) {
 		this.ui = ui;
 		timer.start();
 		ui.start();
@@ -139,7 +136,7 @@ public class Client extends ClientFramework implements ActionListener {
 	 * @param ae 
 	 */
 	@Override
-	public void actionPerformed(ActionEvent ae) {
+	public void actionPerformed(final ActionEvent ae) {
 		loop(0);
 	}
 

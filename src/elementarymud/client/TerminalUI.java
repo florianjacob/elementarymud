@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package elementarymud.client;
 
 import elementarymud.client.inputparsing.CommandInterpreter;
@@ -21,12 +17,12 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
 	}
 
 	@Override
-	public void writeln(String text) {
+	public void writeln(final String text) {
 		write(text + "\n");
 	}
 
 	@Override
-	public void write(String text) {
+	public void write(final String text) {
 		// This should scroll down the pane only if the bar is at the bottom already
 		// problem is, at the moment, something else scrolls down on new content no matter what.
 		JScrollBar verticalBar = outputScrollPane.getVerticalScrollBar();
@@ -127,13 +123,13 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
 		//</editor-fold>
 		setVisible(true);
 		Client client = Client.get();
-		promptLabel.setText(client.getCharacterName() + ">");
+		promptLabel.setText(client.getMyCharacter().getCharacterName() + ">");
 	}
 
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String args[]) {
+	public static void main(final String args[]) {
 		/*
 		 * Set the Nimbus look and feel
 		 */

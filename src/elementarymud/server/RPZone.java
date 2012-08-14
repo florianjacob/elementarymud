@@ -51,7 +51,6 @@ public class RPZone extends MarauroaRPZone {
 		}
 
 		return super.remove(id);
-
 	}
 
 	public ZoneRPObject getZoneObject() {

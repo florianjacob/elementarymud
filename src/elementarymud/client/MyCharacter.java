@@ -14,9 +14,9 @@ public class MyCharacter {
 	private String name;
 	private RPObject myCharacter;
 	private RPObject currentZoneObject;
-	private boolean zoneChanged;
+	private boolean zoneChanged = false;
 
-	public boolean isCharacter(RPObject object) {
+	public boolean isCharacter(final RPObject object) {
 		if (name == null) {
 			return false;
 		}
@@ -28,7 +28,7 @@ public class MyCharacter {
 		}
 	}	
 
-	public void setCharacterName(String name) {
+	public void setCharacterName(final String name) {
 		this.name = name;
 	}
 
@@ -36,7 +36,7 @@ public class MyCharacter {
 		return name;
 	}
 
-	public void setCharacter(RPObject newCharacter) {
+	public void setCharacter(final RPObject newCharacter) {
 		if (this.myCharacter != newCharacter) {
 			myCharacter = newCharacter;
 			name = newCharacter.get("name");
@@ -51,7 +51,7 @@ public class MyCharacter {
 		return currentZoneObject;
 	}
 
-	public void setZone(RPObject zone) {
+	public void setZone(final RPObject zone) {
 		this.currentZoneObject = zone;
 		zoneChanged = true;
 	}
