@@ -15,7 +15,7 @@ public class PerceptionListener implements IPerceptionListener {
 
 	@Override
 	public boolean onAdded(final RPObject object) {
-		MyCharacter myCharacter = Client.get().getMyCharacter();
+		MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
 		log.info("onAdded: " + object);
 		if (myCharacter.isCharacter(object)) {
 			myCharacter.setCharacter(object);
@@ -29,7 +29,7 @@ public class PerceptionListener implements IPerceptionListener {
 
 	@Override
 	public boolean onModifiedAdded(final RPObject object, final RPObject changes) {
-		MyCharacter myCharacter = Client.get().getMyCharacter();
+		MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
 		log.info("onModifiedAdded: " + object + " changes: " + changes);
 		for (RPEvent event : changes.events()) {
 			if (event.getName().equals("public_text")) {
@@ -48,11 +48,10 @@ public class PerceptionListener implements IPerceptionListener {
 
 	@Override
 	public boolean onDeleted(final RPObject object) {
-		Map<RPObject.ID, RPObject> zoneObjects = Client.get().getZoneObjects();
 		log.info("onDeleted: " + object);
 		if (object.instanceOf(RPClass.getRPClass("character"))) {
-			RPObject character = zoneObjects.get(object.getID());
-			Client.get().getUI().writeln(character.get("name") + " left the " + Client.get().getMyCharacter().getZone().get("name") + ".");
+			RPObject character = ZoneObjects.get().getObject(object.getID());
+			Client.get().getUI().writeln(character.get("name") + " left the " + ZoneObjects.get().getMyCharacter().getZone().get("name") + ".");
 		}
 		return false;
 	}
@@ -64,8 +63,7 @@ public class PerceptionListener implements IPerceptionListener {
 		// added and deleted don't contain any public attributes except id and zone
 		// they only contain the private added and deleted attributes / events
 		UI ui = Client.get().getUI();
-		MyCharacter myCharacter = Client.get().getMyCharacter();
-		Map<RPObject.ID, RPObject> zoneObjects = Client.get().getZoneObjects();
+		MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
 		RPObject.ID id = null;
 		if (added != null) {
 			id = added.getID();
@@ -82,7 +80,7 @@ public class PerceptionListener implements IPerceptionListener {
 		}
 
 		if (id != null) {
-			myCharacter.setCharacter(zoneObjects.get(id));
+			ZoneObjects.get().receivedMyCharacter(id);
 			log.info("onMyRPObject: added: " + added + " deleted: " + deleted);
 		}
 

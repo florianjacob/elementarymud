@@ -2,6 +2,7 @@ package elementarymud.client.inputparsing;
 
 import elementarymud.client.inputparsing.actions.ActionRepository;
 import elementarymud.client.Client;
+import elementarymud.client.ZoneObjects;
 import elementarymud.client.inputparsing.Word.WordType;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -96,11 +97,11 @@ public class CommandScanner {
 	}
 
 	private static RPObject getNoun(String remainder) {
-		return getBestHit(Client.get().getEntities(), remainder);
+		return getBestHit(ZoneObjects.get().getEntities(), remainder);
 	}
 
 	private static RPObject getDirection(String remainder) {
-		return getBestHit(Client.get().getExits(), remainder);
+		return getBestHit(ZoneObjects.get().getExits(), remainder);
 	}
 
 	private static RPObject getBestHit(List<RPObject> objects, String remainder) {

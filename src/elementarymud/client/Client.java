@@ -21,6 +21,13 @@ import marauroa.common.net.message.MessageS2CPerception;
 import marauroa.common.net.message.TransferContent;
 
 /**
+ * This class acts as turning point for Client-Server-Communication.
+ * It provides methods to send messages to the server and delegates
+ * handling of incoming perceptions to the PerceptionListener.
+ * 
+ * Additionally, it holds references to commonly-needed
+ * objects as the used UI, the objects in the current zone and
+ * the MyCharacter object.
  *
  * @author raignarok
  */
@@ -29,10 +36,8 @@ public class Client extends ClientFramework implements ActionListener {
 	private final PerceptionHandler handler;
 	private final PerceptionListener listener;
 	private static final Client instance = new Client();
-	private final Map<RPObject.ID, RPObject> zoneObjects;
 	private String[] availableCharacters;
 	private UI ui;
-	private MyCharacter myCharacter = new MyCharacter();
 	private final Timer timer;
 	private static final Logger log = Log4J.getLogger(Client.class);
 
@@ -42,13 +47,20 @@ public class Client extends ClientFramework implements ActionListener {
 
 	private Client() {
 		super("log4j.properties");
-		zoneObjects = new HashMap<RPObject.ID, RPObject>();
 		listener = new PerceptionListener();
 		handler = new PerceptionHandler(listener);
 	    timer = new Timer(300, this);
 		timer.setInitialDelay(500);
 	}
 
+	/**
+	 * After client.login() was called, this returns all available
+	 * character names for the user. This is an empty array if the
+	 * user didn't create a character so far.
+	 * 
+	 * Before login, this returns null.
+	 * @return the available chararacter names or null
+	 */
 	public String[] getAvailableCharacters() {
 		return availableCharacters;
 	}
@@ -60,7 +72,7 @@ public class Client extends ClientFramework implements ActionListener {
 	@Override
 	protected void onPerception(MessageS2CPerception message) {
 		try {
-			handler.apply(message, zoneObjects);
+			handler.apply(message, ZoneObjects.get().getObjects());
 		} catch (Exception e) {
 			// Something weird happened while applying perception
 			e.printStackTrace();
@@ -107,17 +119,9 @@ public class Client extends ClientFramework implements ActionListener {
 			throws TimeoutException, InvalidVersionException, BannedAddressException {
 		boolean successful = super.chooseCharacter(characterName);
 		if (successful) {
-			myCharacter.setCharacterName(characterName);
+			ZoneObjects.get().getMyCharacter().setName(characterName);
 		}
 		return successful;
-	}
-
-	public MyCharacter getMyCharacter() {
-		return myCharacter;
-	}
-
-	public Map<RPObject.ID, RPObject> getZoneObjects() {
-		return zoneObjects;
 	}
 
 	/**
@@ -139,40 +143,4 @@ public class Client extends ClientFramework implements ActionListener {
 	public void actionPerformed(final ActionEvent ae) {
 		loop(0);
 	}
-
-	public List<RPObject> getExits() {
-		ArrayList<RPObject> exits = new ArrayList<RPObject>(zoneObjects.size());
-		for (RPObject object : zoneObjects.values()) {
-			if (object.instanceOf(RPClass.getRPClass("exit"))) {
-				exits.add(object);	
-			}
-		}
-
-		if (exits.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		return Collections.unmodifiableList(exits);
-	}	
-
-	/**
-	 * @return a list of everything excluding players, rooms and exits
-	 */
-	public List<RPObject> getEntities() {
-		ArrayList<RPObject> entities = new ArrayList<RPObject>(zoneObjects.size());
-		for (RPObject object : zoneObjects.values()) {
-			if (!object.instanceOf(RPClass.getRPClass("exit"))
-					&& !object.instanceOf(RPClass.getRPClass("character"))
-					&& !object.instanceOf(RPClass.getRPClass("zone"))) {
-				entities.add(object);	
-			}
-		}
-
-		if (entities.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		return Collections.unmodifiableList(entities);
-
-	}	
 }

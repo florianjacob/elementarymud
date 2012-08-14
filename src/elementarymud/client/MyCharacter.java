@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package elementarymud.client;
 
 import marauroa.common.game.RPObject;
@@ -28,11 +24,11 @@ public class MyCharacter {
 		}
 	}	
 
-	public void setCharacterName(final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public String getCharacterName() {
+	public String getName() {
 		return name;
 	}
 

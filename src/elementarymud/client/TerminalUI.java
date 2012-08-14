@@ -122,8 +122,7 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
 		}
 		//</editor-fold>
 		setVisible(true);
-		Client client = Client.get();
-		promptLabel.setText(client.getMyCharacter().getCharacterName() + ">");
+		promptLabel.setText(ZoneObjects.get().getMyCharacter().getName() + ">");
 	}
 
 	/**

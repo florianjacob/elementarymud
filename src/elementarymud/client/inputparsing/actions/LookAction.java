@@ -3,6 +3,7 @@ package elementarymud.client.inputparsing.actions;
 import elementarymud.client.Client;
 import elementarymud.client.MyCharacter;
 import elementarymud.client.UI;
+import elementarymud.client.ZoneObjects;
 import elementarymud.client.inputparsing.Command;
 import elementarymud.client.inputparsing.CommandParser;
 import elementarymud.client.inputparsing.Word;
@@ -29,12 +30,12 @@ public class LookAction implements Action {
 			// there was a part following we couldn't parse..
 			ui.writeln("Try looking at something else.");
 		} else if (!sentence.hasObject()) {
-			MyCharacter myCharacter = Client.get().getMyCharacter();
+			MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
 			// just look around in the zone
 			RPObject zone = myCharacter.getZone();
 			StringBuilder output = new StringBuilder();
 			output.append("You are in ").append(zone.get("description")).append(".");
-			List<RPObject> exits = Client.get().getExits();
+			List<RPObject> exits = ZoneObjects.get().getExits();
 			if (!exits.isEmpty()) {
 				output.append("\n");
 				if (exits.size() == 1) {
@@ -46,7 +47,7 @@ public class LookAction implements Action {
 				output.append(".");
 			}
 
-			List<RPObject> otherPlayers = getPlayersExcluding(myCharacter.getCharacter());
+			List<RPObject> otherPlayers = ZoneObjects.get().getPlayersExcluding(myCharacter.getCharacter());
 
 			if (!otherPlayers.isEmpty()) {
 				output.append("\n");
@@ -59,7 +60,7 @@ public class LookAction implements Action {
 				output.append(".");
 			}
 
-			List<RPObject> entities = Client.get().getEntities();
+			List<RPObject> entities = ZoneObjects.get().getEntities();
 			if (!entities.isEmpty()) {
 				output.append("\n");
 				output.append("You see ");
@@ -134,30 +135,6 @@ public class LookAction implements Action {
 			builder.append(" and ");
 		}
 		builder.append("a ").append(last.get("name"));
-	}
-
-	/**
-	 * Returns a list of players in this room excluding the given player.
-	 *
-	 * @param player the player to exclude
-	 * @return the list of players
-	 */
-	private List<RPObject> getPlayersExcluding(RPObject player) {
-		Map<RPObject.ID, RPObject> zoneObjects = Client.get().getZoneObjects();
-
-		ArrayList<RPObject> otherPlayers = new ArrayList<RPObject>(zoneObjects.size());
-		for (RPObject object : zoneObjects.values()) {
-			if (object.instanceOf(RPClass.getRPClass("character"))
-					&& !object.getID().equals(player.getID())) {
-				otherPlayers.add(object);
-			}
-		}
-
-		if (otherPlayers.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		return Collections.unmodifiableList(otherPlayers);
 	}
 
 	@Override
