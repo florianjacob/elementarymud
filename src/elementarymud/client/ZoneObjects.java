@@ -14,7 +14,7 @@ import marauroa.common.game.RPObject;
  */
 public class ZoneObjects {
 	
-	private final Map<RPObject.ID, RPObject> zoneObjects = new HashMap<RPObject.ID, RPObject>();
+	private final Map<RPObject.ID, RPObject> zoneObjects = new HashMap<>();
 	private final MyCharacter myCharacter = new MyCharacter();
 
 	private static final ZoneObjects instance = new ZoneObjects();
@@ -39,7 +39,7 @@ public class ZoneObjects {
 	}
 	
 	public List<RPObject> getExits() {
-		ArrayList<RPObject> exits = new ArrayList<RPObject>(zoneObjects.size());
+		ArrayList<RPObject> exits = new ArrayList<>(zoneObjects.size());
 		for (RPObject object : zoneObjects.values()) {
 			if (object.instanceOf(RPClass.getRPClass("exit"))) {
 				exits.add(object);	
@@ -61,7 +61,7 @@ public class ZoneObjects {
 	 * @return a list of everything excluding players, rooms and exits
 	 */
 	public List<RPObject> getEntities() {
-		ArrayList<RPObject> entities = new ArrayList<RPObject>(zoneObjects.size());
+		ArrayList<RPObject> entities = new ArrayList<>(zoneObjects.size());
 		for (RPObject object : zoneObjects.values()) {
 			if (!object.instanceOf(RPClass.getRPClass("exit"))
 					&& !object.instanceOf(RPClass.getRPClass("character"))
@@ -84,7 +84,7 @@ public class ZoneObjects {
 	 * @return the list of players
 	 */
 	public List<RPObject> getPlayersExcluding(RPObject player) {
-		ArrayList<RPObject> otherPlayers = new ArrayList<RPObject>(zoneObjects.size());
+		ArrayList<RPObject> otherPlayers = new ArrayList<>(zoneObjects.size());
 		for (RPObject object : zoneObjects.values()) {
 			if (object.instanceOf(RPClass.getRPClass("character"))
 					&& !object.getID().equals(player.getID())) {

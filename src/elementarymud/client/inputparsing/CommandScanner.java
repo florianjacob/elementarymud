@@ -1,9 +1,8 @@
 package elementarymud.client.inputparsing;
 
-import elementarymud.client.inputparsing.actions.ActionRepository;
-import elementarymud.client.Client;
 import elementarymud.client.ZoneObjects;
 import elementarymud.client.inputparsing.Word.WordType;
+import elementarymud.client.inputparsing.actions.ActionRepository;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +18,7 @@ import marauroa.common.game.RPObject;
  */
 public class CommandScanner {
 
-	private static final Set<String> stopWords = new HashSet<String>();
+	private static final Set<String> stopWords = new HashSet<>();
 	private static final Pattern number = Pattern.compile("[0-9]+");
 
 	static {
@@ -34,7 +33,7 @@ public class CommandScanner {
 
 	public static LinkedList<Word> scan(String rawInput) {
 		LinkedList<String> input = new LinkedList(Arrays.asList(rawInput.split(" ")));
-		LinkedList<Word> result = new LinkedList<Word>();
+		LinkedList<Word> result = new LinkedList<>();
 		ActionRepository actions = ActionRepository.get();
 
 		String word;
@@ -78,9 +77,9 @@ public class CommandScanner {
 
 		remainder = remainder.trim();
 		if (!remainder.equals("")) {
-			return new LinkedList<String>(Arrays.asList(remainder.split(" ")));
+			return new LinkedList<>(Arrays.asList(remainder.split(" ")));
 		} else {
-			return new LinkedList<String>();
+			return new LinkedList<>();
 		}
 	}
 

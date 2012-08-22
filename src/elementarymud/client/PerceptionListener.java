@@ -1,7 +1,6 @@
 package elementarymud.client;
 
 import elementarymud.client.inputparsing.CommandInterpreter;
-import java.util.Map;
 import marauroa.client.net.IPerceptionListener;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;

@@ -1,8 +1,13 @@
 package elementarymud.client;
 
+import java.io.IOException;
+import marauroa.client.BannedAddressException;
+import marauroa.client.LoginFailedException;
+import marauroa.client.TimeoutException;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.RPObject;
+import marauroa.common.net.InvalidVersionException;
 
 /**
  *
@@ -58,18 +63,22 @@ public class Starter {
 			}
 			
 			client.chooseCharacter(username);
-		} catch (Exception e) {
+		} catch (TimeoutException|InvalidVersionException|BannedAddressException|LoginFailedException|IOException e) {
 			log.error("Problem during login and/or character creation: " + e);
 			System.exit(1);
 		}
 
 		UI ui = null;
-		if (mode.equals("terminal")) {
-			ui = new TerminalUI();
-		} else if (mode.equals("testbot")) {
-			ui = new TestBot();
-		} else {
-			printHelpAndExit();
+		switch (mode) {
+			case "terminal":
+				ui = new TerminalUI();
+				break;
+			case "testbot":
+				ui = new TestBot();
+				break;
+			default:
+				printHelpAndExit();
+				break;
 		}
 		client.start(ui);
 	}	

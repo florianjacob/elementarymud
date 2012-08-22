@@ -1,6 +1,7 @@
 package elementarymud.server;
 
 import elementarymud.server.rpobjects.Character;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import marauroa.common.Log4J;
@@ -87,35 +88,39 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 	public void execute(RPObject caster, RPAction action) {
 		if (caster instanceof Character) {
 			Character character = (Character) caster;
-
-			if (action.get("verb").equals("say")) {
-				character.say(action.get("remainder"));
-			} else if (action.get("verb").equals("tell") ||
-					action.get("verb").equals("sayto")) {
-				IRPZone.ID zoneId = character.getZone().getID();
-				int objectId = Integer.parseInt(action.get("object"));
-				RPObject.ID targetId = new RPObject.ID(objectId, zoneId);
-				RPObject target = character.getZone().get(targetId);
-				if (target == null) {
-					character.sendPrivateText("Your target isn't here.");
-				} else {
-					//TODO: proper targeted speaking here!
-					character.say("to " + target.get("name") + ": " + action.get("remainder"));
-				}
-			} else if (action.get("verb").equals("go")) {
-				String exit = action.get("object");
-				RPZone oldZone = (RPZone) character.getZone();
-				if (!oldZone.hasExit(exit)) {
-					character.sendPrivateText("Exit " + exit + " doesn't exist.");
-				}
-				world.modify(caster);
-				world.changeZone(oldZone.getExit(exit).getTargetZoneId(), caster);
-
-			} else if (action.get("verb").equals("desc")) {
-				world.modify(caster);
-				character.setDescription(action.get("remainder"));
-			} else {
-				character.sendPrivateText("Unknown action verb " + action.get("verb"));
+			switch (action.get("verb")) {
+				case "say":
+					character.say(action.get("remainder"));
+					break;
+				case "tell":
+				case "sayto":
+					IRPZone.ID zoneId = character.getZone().getID();
+					int objectId = Integer.parseInt(action.get("object"));
+					RPObject.ID targetId = new RPObject.ID(objectId, zoneId);
+					RPObject target = character.getZone().get(targetId);
+					if (target == null) {
+						character.sendPrivateText("Your target isn't here.");
+					} else {
+						//TODO: proper targeted speaking here!
+						character.say("to " + target.get("name") + ": " + action.get("remainder"));
+					}
+					break;
+				case "go":
+					String exit = action.get("object");
+					RPZone oldZone = (RPZone) character.getZone();
+					if (!oldZone.hasExit(exit)) {
+						character.sendPrivateText("Exit " + exit + " doesn't exist.");
+					}
+					world.modify(caster);
+					world.changeZone(oldZone.getExit(exit).getTargetZoneId(), caster);
+					break;
+				case "desc":
+					world.modify(caster);
+					character.setDescription(action.get("remainder"));
+					break;
+				default:
+					character.sendPrivateText("Unknown action verb " + action.get("verb"));
+					break;
 			}
 
 		} else {
@@ -161,7 +166,7 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 			transactionPool.commit(trans);
 			// error in example: should return the newly-created object and not the template here
 			return new CharacterResult(Result.OK_CREATED, characterName, character);
-		} catch (Exception e) {
+		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 			transactionPool.rollback(trans);
 			return new CharacterResult(Result.FAILED_EXCEPTION, characterName, template);

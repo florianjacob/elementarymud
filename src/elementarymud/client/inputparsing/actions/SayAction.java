@@ -31,7 +31,7 @@ class SayAction implements Action {
 
 	@Override
 	public Set<String> actionVerbs() {
-		Set<String> verbs = new HashSet<String>();
+		Set<String> verbs = new HashSet<>();
 		verbs.add("say");
 		verbs.add("sayto");
 		verbs.add("tell");

@@ -7,12 +7,9 @@ import elementarymud.client.ZoneObjects;
 import elementarymud.client.inputparsing.Command;
 import elementarymud.client.inputparsing.CommandParser;
 import elementarymud.client.inputparsing.Word;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
@@ -139,7 +136,7 @@ public class LookAction implements Action {
 
 	@Override
 	public Set<String> actionVerbs() {
-		Set<String> verbs = new HashSet<String>();
+		Set<String> verbs = new HashSet<>();
 		verbs.add("look");	
 		return verbs;
 	}

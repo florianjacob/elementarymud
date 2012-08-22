@@ -19,7 +19,7 @@ public class RPZone extends MarauroaRPZone {
 
 	private ZoneRPObject zoneRPObject;
 
-	private List<Exit> exits = new LinkedList<Exit>();
+	private List<Exit> exits = new LinkedList<>();
 
 	public RPZone(String zoneid, String name, String description) {
 		super(zoneid);

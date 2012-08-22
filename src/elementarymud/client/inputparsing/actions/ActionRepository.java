@@ -8,7 +8,7 @@ import java.util.Map;
  * @author raignarok
  */
 public class ActionRepository {
-	private final Map<String, Action> actions = new HashMap<String, Action>();
+	private final Map<String, Action> actions = new HashMap<>();
 	private static final ActionRepository instance = new ActionRepository();
 
 	public static ActionRepository get() {

@@ -2,11 +2,7 @@ package elementarymud.client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.Timer;
 import marauroa.client.BannedAddressException;
 import marauroa.client.ClientFramework;
@@ -14,8 +10,6 @@ import marauroa.client.TimeoutException;
 import marauroa.client.net.PerceptionHandler;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
-import marauroa.common.game.RPClass;
-import marauroa.common.game.RPObject;
 import marauroa.common.net.InvalidVersionException;
 import marauroa.common.net.message.MessageS2CPerception;
 import marauroa.common.net.message.TransferContent;
@@ -69,6 +63,59 @@ public class Client extends ClientFramework implements ActionListener {
 		return ui;
 	}
 
+	/**
+	 * Start the network loop of the client and make the UI visible and ready.
+	 * This has to be called after the client.login() and client.chooseCharacter()
+	 * have been called to start the client event loop.
+	 * It repeatingly checks for new server messages and handles them,
+	 * and calls start() on the UI.
+	 * 
+	 * @param ui the UI to send output to
+	 */
+	public void start(final UI ui) {
+		this.ui = ui;
+		timer.start();
+		ui.start();
+	}
+
+	/**
+	 * After login allows you to choose a character to play
+	 *
+	 * @param characterName
+	 *            name of the character we want to play with.
+	 * @return true if choosing character is successful.
+	 * @throws InvalidVersionException
+	 *             if we are not using a compatible version
+	 * @throws TimeoutException
+	 *             if timeout happens while waiting for the message.
+	 * @throws BannedAddressException
+	 */	
+	@Override
+	public synchronized boolean chooseCharacter(String characterName)
+			throws TimeoutException, InvalidVersionException, BannedAddressException {
+		boolean successful = super.chooseCharacter(characterName);
+		if (successful) {
+			ZoneObjects.get().getMyCharacter().setName(characterName);
+		}
+		return successful;
+	}
+
+	/**
+	 * Called by the timer to read new messages from the network buffer.
+	 * No need to call it yourself.
+	 * @param ae 
+	 */
+	@Override
+	public void actionPerformed(final ActionEvent ae) {
+		loop(0);
+	}
+
+	/**
+	 * Gets called by the network loop when new perceptions from the server are availalbe.
+	 * Delegates the perception handling to the PerceptionListener.
+	 * 
+	 * @param message the message from the server
+	 */
 	@Override
 	protected void onPerception(MessageS2CPerception message) {
 		try {
@@ -112,35 +159,5 @@ public class Client extends ClientFramework implements ActionListener {
 
 	@Override
 	protected void onPreviousLogins(List<String> previousLogins) {
-	}
-
-	@Override
-	public synchronized boolean chooseCharacter(String characterName)
-			throws TimeoutException, InvalidVersionException, BannedAddressException {
-		boolean successful = super.chooseCharacter(characterName);
-		if (successful) {
-			ZoneObjects.get().getMyCharacter().setName(characterName);
-		}
-		return successful;
-	}
-
-	/**
-	 * Start the network loop of the client and the swing event loop of the UI.
-	 * 
-	 * @param ui 
-	 */
-	public void start(final UI ui) {
-		this.ui = ui;
-		timer.start();
-		ui.start();
-	}
-
-	/**
-	 * Called by the timer to read new messages from the network buffer.
-	 * @param ae 
-	 */
-	@Override
-	public void actionPerformed(final ActionEvent ae) {
-		loop(0);
 	}
 }

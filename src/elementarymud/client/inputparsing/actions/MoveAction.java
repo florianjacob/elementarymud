@@ -25,7 +25,7 @@ class MoveAction implements Action {
 
 	@Override
 	public Set<String> actionVerbs() {
-		Set<String> verbs = new HashSet<String>();
+		Set<String> verbs = new HashSet<>();
 		verbs.add("go");
 		return verbs;
 	}
