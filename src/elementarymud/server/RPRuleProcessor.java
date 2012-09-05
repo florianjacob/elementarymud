@@ -88,16 +88,20 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 	public void execute(RPObject caster, RPAction action) {
 		if (caster instanceof Character) {
 			Character character = (Character) caster;
+			IRPZone.ID zoneId = character.getZone().getID();
+			int objectId;
+			RPObject.ID targetId;
+			RPObject target;
+
 			switch (action.get("verb")) {
 				case "say":
 					character.say(action.get("remainder"));
 					break;
 				case "tell":
 				case "sayto":
-					IRPZone.ID zoneId = character.getZone().getID();
-					int objectId = Integer.parseInt(action.get("object"));
-					RPObject.ID targetId = new RPObject.ID(objectId, zoneId);
-					RPObject target = character.getZone().get(targetId);
+					objectId = Integer.parseInt(action.get("object"));
+					targetId = new RPObject.ID(objectId, zoneId);
+					target = character.getZone().get(targetId);
 					if (target == null) {
 						character.sendPrivateText("Your target isn't here.");
 					} else {
@@ -113,6 +117,32 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 					}
 					world.modify(caster);
 					world.changeZone(oldZone.getExit(exit).getTargetZoneId(), caster);
+					break;
+				case "take":
+					objectId = Integer.parseInt(action.get("object"));
+					targetId = new RPObject.ID(objectId, zoneId);
+					target = character.getZone().get(targetId);
+					if (target == null) {
+						character.sendPrivateText("Your target doesn't exist.");
+					} else {
+						world.modify(character);
+						world.modify(target);
+						character.getZone().remove(targetId);
+						character.addToInventory(target);
+					}
+					break;
+				case "drop":
+					objectId = Integer.parseInt(action.get("object"));
+					// the targetId is a SlodID, so the zoneID part (set to an empty string here) will be ignored anyway
+					targetId = new RPObject.ID(objectId, "");
+					target = character.getFromInventory(targetId);
+					if (target == null) {
+						character.sendPrivateText("Your target doesn't exist.");
+					} else {
+						world.modify(character);
+						character.removeFromInventory(targetId);
+						character.getZone().add(target);
+					}
 					break;
 				case "desc":
 					world.modify(caster);

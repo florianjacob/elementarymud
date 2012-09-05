@@ -2,12 +2,14 @@ package elementarymud.server.rpobjects;
 
 import elementarymud.server.PrivateTextEvent;
 import elementarymud.server.PublicTextEvent;
+import java.util.Iterator;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
 import marauroa.common.game.Definition;
 import marauroa.common.game.IRPZone;
 import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
+import marauroa.common.game.RPSlot;
 
 /**
  *
@@ -24,6 +26,7 @@ public class Character extends MudRPObject {
 	public Character(String name, String description) {
 		super(name, description);
 		setRPClass(RPCLASSNAME);
+		addSlot("bag");
 	}
 
 	public Character(RPObject template) {
@@ -40,6 +43,26 @@ public class Character extends MudRPObject {
 		notifyWorldAboutChanges();
 	}
 
+	public void addToInventory(RPObject object) {
+		RPSlot bag = getSlot("bag");
+		bag.add(object);
+	}
+
+	public RPObject getFromInventory(RPObject.ID id) {
+		RPSlot bag = getSlot("bag");
+		return bag.get(id);
+	}
+
+	public void removeFromInventory(RPObject.ID id) {
+		RPSlot bag = getSlot("bag");
+		bag.remove(id);
+	}
+
+	public Iterator<RPObject> inventoryIterator() {
+		RPSlot bag = getSlot("bag");
+		return bag.iterator();
+	}
+
 	public IRPZone getZone() {
 		return lastZone;
 	}
@@ -47,6 +70,7 @@ public class Character extends MudRPObject {
 	public static void generateRPClass() {
 		RPClass character = new RPClass(RPCLASSNAME);
 		character.isA(MudRPObject.getRPClassName());
+		character.addRPSlot("bag", 12, Definition.PRIVATE);
 		character.addRPEvent("private_text", Definition.PRIVATE);
 		character.addRPEvent("public_text", Definition.STANDARD);
 	}

@@ -19,12 +19,17 @@ public class CommandInterpreter {
 	 * @param rawInput the raw input as entered by the user
 	 */
 	public static void onInput(String rawInput) {
-		CommandParser parser = new CommandParser(rawInput);
-		Command command = parser.parse();
+		CommandScanner scanner = new CommandScanner(rawInput);
+		Action action = scanner.firstWordAction();
 
-		if (command != null) {
-			Action action = command.getVerb().getAction();
-			action.execute(command);
+		if (action != null) {
+			boolean valid = action.configure(scanner);
+			if (valid) {
+				action.execute();
+			} else {
+				//TODO: Display command hint here? Or do that in the Action itself?
+				Client.get().getUI().writeln("Try something else.");
+			}
 		} else {
 			Client.get().getUI().writeln("Try something else.");
 		}

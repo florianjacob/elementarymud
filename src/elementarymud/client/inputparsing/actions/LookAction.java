@@ -4,9 +4,7 @@ import elementarymud.client.Client;
 import elementarymud.client.MyCharacter;
 import elementarymud.client.UI;
 import elementarymud.client.ZoneObjects;
-import elementarymud.client.inputparsing.Command;
-import elementarymud.client.inputparsing.CommandParser;
-import elementarymud.client.inputparsing.Word;
+import elementarymud.client.inputparsing.CommandScanner;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,15 +16,12 @@ import marauroa.common.game.RPObject;
  *
  * @author raignarok
  */
-public class LookAction implements Action {
+public class LookAction extends Action {
 
 	@Override
-	public void execute(Command sentence) {
+	public void execute() {
 		UI ui = Client.get().getUI();
-		if (sentence.getRemainder() != null) {
-			// there was a part following we couldn't parse..
-			ui.writeln("Try looking at something else.");
-		} else if (!sentence.hasObject()) {
+		if (!hasTarget()) {
 			MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
 			// just look around in the zone
 			RPObject zone = myCharacter.getZone();
@@ -68,15 +63,15 @@ public class LookAction implements Action {
 			ui.writeln(output.toString());
 		} else {
 			// look at something specific
-			RPObject object = sentence.getObject().getRPObject();
+			RPObject target = getTarget();
 
 			StringBuilder out = new StringBuilder();
 			out.append("You see ");
 
-			if (object.instanceOf(RPClass.getRPClass("character"))) {
-				out.append(object.get("name")).append(", ").append(object.get("description"));
+			if (target.instanceOf(RPClass.getRPClass("character"))) {
+				out.append(target.get("name")).append(", ").append(target.get("description"));
 			} else {
-				out.append(object.get("description"));
+				out.append(target.get("description"));
 			}
 			out.append(".");
 			ui.writeln(out.toString());
@@ -142,8 +137,8 @@ public class LookAction implements Action {
 	}
 
 	@Override
-	public void parse(CommandParser parser, Command command) {
-		Word object = parser.nextObject();
-		command.setObject(object);
+	public boolean configure(CommandScanner scanner) {
+		setTarget(scanner.scanForRPObject());
+		return true;
 	}
 }

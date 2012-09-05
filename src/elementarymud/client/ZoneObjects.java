@@ -1,6 +1,7 @@
 package elementarymud.client;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,10 @@ public class ZoneObjects {
 
 	public RPObject getObject(final RPObject.ID id) {
 		return zoneObjects.get(id);
+	}
+
+	public Collection<RPObject> getAllObjects() {
+		return Collections.unmodifiableCollection(zoneObjects.values());
 	}
 	
 	public List<RPObject> getExits() {
@@ -76,6 +81,26 @@ public class ZoneObjects {
 
 		return Collections.unmodifiableList(entities);
 	}	
+
+	/**
+	 * Returns a list of players in this room .
+	 *
+	 * @return the list of players
+	 */
+	public List<RPObject> getPlayers() {
+		ArrayList<RPObject> players = new ArrayList<>(zoneObjects.size());
+		for (RPObject object : zoneObjects.values()) {
+			if (object.instanceOf(RPClass.getRPClass("character"))) {
+				players.add(object);
+			}
+		}
+
+		if (players.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		return Collections.unmodifiableList(players);
+	}
 
 	/**
 	 * Returns a list of players in this room excluding the given player.

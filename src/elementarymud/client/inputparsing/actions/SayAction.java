@@ -1,30 +1,30 @@
 package elementarymud.client.inputparsing.actions;
 
 import elementarymud.client.Client;
-import elementarymud.client.inputparsing.Command;
-import elementarymud.client.inputparsing.CommandParser;
-import elementarymud.client.inputparsing.Word;
+import elementarymud.client.inputparsing.CommandScanner;
 import java.util.HashSet;
 import java.util.Set;
 import marauroa.common.game.RPAction;
+import marauroa.common.game.RPObject;
 
 /**
  *
  * @author raignarok
  */
-class SayAction implements Action {
+class SayAction extends Action {
+
+	private String usedVerb;
+	private String wordsToSpeak;
 
 	@Override
-	public void execute(Command command) {
+	public void execute() {
 		RPAction action = new RPAction();
-		String verb = command.getVerb().getWord();
-		String remainder = command.getRemainder();
-		action.put("verb", verb);
+		action.put("verb", usedVerb);
 
-		if (command.hasObject()) {
-			action.put("object", command.getObject().getRPObject().getID().getObjectID());
+		if (hasTarget()) {
+			action.put("object", getTargetID().getObjectID());
 		}
-		action.put("remainder", remainder);
+		action.put("remainder", wordsToSpeak);
 
 		Client.get().send(action);
 	}
@@ -40,14 +40,21 @@ class SayAction implements Action {
 	}
 
 	@Override
-	public void parse(CommandParser parser, Command command) {
-		if (!command.getVerb().getWord().equals("say")) {
+	public boolean configure(CommandScanner scanner) {
+		usedVerb = scanner.getVerb();
+		if (!usedVerb.equals("say")) {
 			// tell and sayto (the other say actions) have a target object
-			Word object = parser.nextObject();
-			command.setObject(object);
-			command.setRemainder(parser.getUnparsedRemainder(object));
+			RPObject target = scanner.scanForPlayer();
+			if (target != null) {
+				setTarget(target);
+				wordsToSpeak = scanner.getRemainder();
+				return true;
+			} else {
+				return false;
+			}
 		} else {
-			command.setRemainder(parser.getUnparsedRemainder(command.getVerb()));
+			wordsToSpeak = scanner.getInputWithoutVerb();
+			return true;
 		}
 	}
 }

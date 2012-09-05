@@ -11,32 +11,33 @@ import marauroa.common.game.RPObject;
  *
  * @author raignarok
  */
-class MoveAction extends Action {
-
-	@Override
-	public void execute() {
-		// unknown local command, sending to server..
-		RPAction action = new RPAction();
-		action.put("verb", "go");
-		action.put("object", getTarget().get("name"));
-		Client.get().send(action);
-	}
+public class TakeAction extends Action {
 
 	@Override
 	public Set<String> actionVerbs() {
 		Set<String> verbs = new HashSet<>();
-		verbs.add("go");
+		verbs.add("take");
 		return verbs;
 	}
 
 	@Override
 	public boolean configure(CommandScanner scanner) {
-		RPObject exit = scanner.scanForExit();
-		if (exit != null) {
-			setTarget(exit);
+		RPObject target = scanner.scanForRPObject();
+		if (target != null) {
+			setTarget(target);
 			return true;
 		} else {
 			return false;
 		}
 	}
+
+	@Override
+	public void execute() {
+		RPAction action = new RPAction();
+		action.put("verb", "take");
+		action.put("object", getTargetID().getObjectID());
+
+		Client.get().send(action);
+	}
+	
 }

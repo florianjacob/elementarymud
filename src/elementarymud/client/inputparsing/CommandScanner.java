@@ -1,7 +1,7 @@
 package elementarymud.client.inputparsing;
 
 import elementarymud.client.ZoneObjects;
-import elementarymud.client.inputparsing.Word.WordType;
+import elementarymud.client.inputparsing.actions.Action;
 import elementarymud.client.inputparsing.actions.ActionRepository;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import marauroa.common.game.RPObject;
+import marauroa.common.game.RPSlot;
 
 /**
  *
@@ -20,6 +21,11 @@ public class CommandScanner {
 
 	private static final Set<String> stopWords = new HashSet<>();
 	private static final Pattern number = Pattern.compile("[0-9]+");
+
+	private String verb;
+	private String rawInputWithoutVerb;
+
+	LinkedList<String> input;
 
 	static {
 		stopWords.add("the");
@@ -31,41 +37,87 @@ public class CommandScanner {
 		stopWords.add("to");
 	}
 
-	public static LinkedList<Word> scan(String rawInput) {
-		LinkedList<String> input = new LinkedList(Arrays.asList(rawInput.split(" ")));
-		LinkedList<Word> result = new LinkedList<>();
-		ActionRepository actions = ActionRepository.get();
+	public CommandScanner(String rawInput) {
+		input = new LinkedList(Arrays.asList(rawInput.split(" ")));
+	}
 
+	protected Action firstWordAction() {
+		ActionRepository actions = ActionRepository.get();
+		Action action = null; 
+
+		if (!input.isEmpty()) {
+			verb = input.peek();
+			action = actions.getAction(verb);	
+
+			if (action == null) {
+				RPObject bestHit = getBestHitFor(verb, ZoneObjects.get().getExits());
+				if (bestHit != null) {
+					// we allow to enter direction words directly without a go infront of it
+					action = actions.getAction("go");
+					verb = "go";
+				} 
+			} else {
+				// in case we actually had an action as the first word, we want to
+				// remove that word from the input queue
+				input.pop();
+			}
+		}
+		rawInputWithoutVerb = reconcatenate(input);
+
+		return action;
+	}
+
+	private RPObject scanIn(Iterable<RPObject> collection) {
+		skipStopWords();
+		RPObject hit = getBestHitFor(reconcatenate(input), collection);
+		if (hit != null) {
+			purgeObject(hit);
+		}
+		return hit;
+	}
+
+	public RPObject scanForExit() {
+		return scanIn(ZoneObjects.get().getExits());
+	}
+
+	public RPObject scanForPlayer() {
+		return scanIn(ZoneObjects.get().getPlayers());
+	}
+	
+	public RPObject scanForBagItem() {
+		return scanIn(ZoneObjects.get().getMyCharacter().getCharacter().getSlot("bag"));
+	}
+
+	public RPObject scanForRPObject() {
+		return scanIn(ZoneObjects.get().getAllObjects());
+	}
+
+	public String getInputWithoutVerb() {
+		return rawInputWithoutVerb;
+	}
+
+	public String getVerb() {
+		return verb;
+	}
+
+	public String getRemainder() {
+		return reconcatenate(input);
+	}
+
+	private void skipStopWords() {
 		String word;
 		while (!input.isEmpty()) {
 			word = input.peek();
-			String remainder = reconcatenate(input);
-			RPObject target;
-
 			if (stopWords.contains(word)) {
-				result.add(new Word(word, WordType.STOPWORD));
-				input.pop();
-			} else if (actions.hasAction(word)) {
-				result.add(new Word(word, WordType.VERB, actions.getAction(word)));
-				input.pop();
-			} else if ((target = getDirection(remainder)) != null) {
-				input = purgeObject(remainder, target);
-				result.add(new Word(target.get("name"), WordType.DIRECTION, target));
-			} else if ((target = getNoun(remainder)) != null) {
-				input = purgeObject(remainder, target);
-				result.add(new Word(target.get("name"), WordType.NOUN, target));
-			} else if (number.matcher(word).matches()) {
-				input.pop();
-				result.add(new Word(word, WordType.NUMBER));
+				input.pop();	
 			} else {
-				input.pop();
-				result.add(new Word(word, WordType.ERROR));
+				break;
 			}
 		}
-		return result;
 	}
 
-	private static LinkedList<String> purgeObject(String remainder, RPObject object) {
+	private void purgeObject(RPObject object) {
+		String remainder = reconcatenate(input);
 		String objectName = object.get("name").toLowerCase();
 		String objectShortName = object.get("shortname").toLowerCase();
 		if (remainder.startsWith(objectName)) {
@@ -77,9 +129,9 @@ public class CommandScanner {
 
 		remainder = remainder.trim();
 		if (!remainder.equals("")) {
-			return new LinkedList<>(Arrays.asList(remainder.split(" ")));
+			input = new LinkedList<>(Arrays.asList(remainder.split(" ")));
 		} else {
-			return new LinkedList<>();
+			input = new LinkedList<>();
 		}
 	}
 
@@ -95,15 +147,15 @@ public class CommandScanner {
 		return string.toString();
 	}
 
-	private static RPObject getNoun(String remainder) {
-		return getBestHit(ZoneObjects.get().getEntities(), remainder);
-	}
 
-	private static RPObject getDirection(String remainder) {
-		return getBestHit(ZoneObjects.get().getExits(), remainder);
-	}
-
-	private static RPObject getBestHit(List<RPObject> objects, String remainder) {
+	/**
+	 * Gets the best exact hit.
+	 * 
+	 * @param remainder
+	 * @param objects
+	 * @return 
+	 */
+	private RPObject getBestHitFor(String remainder, Iterable<RPObject> objects) {
 		int bestHitLength = 0;
 		RPObject bestHit = null;
 		for (RPObject object : objects) {
@@ -118,8 +170,25 @@ public class CommandScanner {
 				bestHitLength = shortName.length();
 				bestHit = object;
 			}
+
+			if (object.hasSlot("bag")) {
+				RPObject bestBagHit = getBestHitFor(remainder, object.getSlot("bag"));
+				if (bestBagHit != null) {
+					String bagHitName = bestBagHit.get("name");
+					if (bestHitLength < bagHitName.length()) {
+						bestHitLength = bagHitName.length();
+						bestHit = bestBagHit;
+					}
+				
+					String bagHitShortName = bestBagHit.get("shortname");
+					if (bestHitLength < bagHitShortName.length()) {
+						bestHitLength = bagHitShortName.length();
+						bestHit = bestBagHit;
+					}
+				}
+			}
 		}
 		return bestHit;
-	}
+	}	
 
 }
