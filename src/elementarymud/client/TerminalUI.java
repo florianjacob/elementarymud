@@ -9,6 +9,8 @@ import javax.swing.JScrollBar;
  */
 public class TerminalUI extends javax.swing.JFrame implements UI {
 
+	private CommandInterpreter commandInterpreter;
+
 	/**
 	 * Creates new form TerminalUI
 	 */
@@ -94,11 +96,14 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
 	private void inputTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputTextFieldActionPerformed
 		String input = inputTextField.getText();
 		inputTextField.setText("");
-		CommandInterpreter.onInput(input);
+		boolean validCommand = commandInterpreter.onInput(input);
+		if (!validCommand) {
+			writeln("Try something else.");	
+		}
 	}//GEN-LAST:event_inputTextFieldActionPerformed
 
 	@Override
-	public void start() {
+	public void start(String prompt) {
 		//<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /*
 		 * If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel. For details see
@@ -116,7 +121,7 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
 		}
 		//</editor-fold>
 		setVisible(true);
-		promptLabel.setText(ZoneObjects.get().getMyCharacter().getName() + ">");
+		promptLabel.setText(prompt);
 	}
 
 	/**
@@ -159,4 +164,9 @@ public class TerminalUI extends javax.swing.JFrame implements UI {
     private javax.swing.JTextArea outputTextArea;
     private javax.swing.JLabel promptLabel;
     // End of variables declaration//GEN-END:variables
+
+	@Override
+	public void setCommandInterpreter(CommandInterpreter interpreter) {
+		this.commandInterpreter = interpreter;
+	}
 }

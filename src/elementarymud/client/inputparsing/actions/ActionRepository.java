@@ -1,5 +1,7 @@
 package elementarymud.client.inputparsing.actions;
 
+import elementarymud.client.UI;
+import elementarymud.client.ZoneObjects;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,13 +11,12 @@ import java.util.Map;
  */
 public class ActionRepository {
 	private final Map<String, Action> actionPrototypes = new HashMap<>();
-	private static final ActionRepository instance = new ActionRepository();
+	private UI ui;
+	private ZoneObjects zoneObjects;
 
-	public static ActionRepository get() {
-		return instance;
-	}
-
-	private ActionRepository() {
+	public ActionRepository(ZoneObjects zoneObjects, UI ui) {
+		this.ui = ui;
+		this.zoneObjects = zoneObjects;
 		registerAction(new LookAction());
 		registerAction(new MoveAction());
 		registerAction(new SayAction());
@@ -25,6 +26,7 @@ public class ActionRepository {
 	}
 
 	private void registerAction(final Action action) {
+		action.init(zoneObjects, ui);
 		for (String verb : action.actionVerbs()) {
 			actionPrototypes.put(verb, action);
 		}

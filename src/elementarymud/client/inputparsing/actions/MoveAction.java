@@ -1,6 +1,5 @@
 package elementarymud.client.inputparsing.actions;
 
-import elementarymud.client.Client;
 import elementarymud.client.inputparsing.CommandScanner;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,12 +13,13 @@ import marauroa.common.game.RPObject;
 class MoveAction extends Action {
 
 	@Override
-	public void execute() {
+	public RPAction execute() {
 		// unknown local command, sending to server..
 		RPAction action = new RPAction();
 		action.put("verb", "go");
 		action.put("target", getTarget().get("name"));
-		Client.get().send(action);
+
+		return action;
 	}
 
 	@Override
@@ -36,6 +36,7 @@ class MoveAction extends Action {
 			setTarget(exit);
 			return true;
 		} else {
+			getUI().writeln("Usage: go <exit>");
 			return false;
 		}
 	}

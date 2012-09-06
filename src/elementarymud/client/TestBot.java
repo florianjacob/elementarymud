@@ -14,8 +14,10 @@ public class TestBot implements UI, ActionListener {
 	private Timer timer;
 	private int counter = 500;
 
+	private CommandInterpreter commandInterpreter;
+
 	@Override
-	public void start() {
+	public void start(String prompt) {
 		timer = new Timer(1000, this);
 		timer.setInitialDelay(500);
 		timer.start();
@@ -23,7 +25,7 @@ public class TestBot implements UI, ActionListener {
 
 	@Override
 	public void actionPerformed(final ActionEvent ae) {
-		CommandInterpreter.onInput("say This is TestBot, running and talking for " + counter + "ms.");
+		commandInterpreter.onInput("say This is TestBot, running and talking for " + counter + "ms.");
 		counter += 1000;
 	}
 
@@ -36,5 +38,10 @@ public class TestBot implements UI, ActionListener {
 	public void writeln(final String text) {
 		write(text);
 		System.out.println();
+	}
+
+	@Override
+	public void setCommandInterpreter(final CommandInterpreter interpreter) {
+		this.commandInterpreter = interpreter;
 	}
 }

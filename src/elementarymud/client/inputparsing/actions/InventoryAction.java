@@ -1,11 +1,10 @@
 package elementarymud.client.inputparsing.actions;
 
-import elementarymud.client.Client;
 import elementarymud.client.MyCharacter;
-import elementarymud.client.ZoneObjects;
 import elementarymud.client.inputparsing.CommandScanner;
 import java.util.HashSet;
 import java.util.Set;
+import marauroa.common.game.RPAction;
 import marauroa.common.game.RPObject;
 import marauroa.common.game.RPSlot;
 
@@ -30,15 +29,17 @@ public class InventoryAction extends Action {
 	}
 
 	@Override
-	public void execute() {
-		MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
+	public RPAction execute() {
+		MyCharacter myCharacter = getZoneObjects().getMyCharacter();
 		RPSlot bag = myCharacter.getCharacter().getSlot("bag");
 		StringBuilder builder = new StringBuilder();
 		builder.append("You have with you: \n");
 		for (RPObject object : bag) {
 			builder.append(object.get("description")).append("\n");
 		}
-		Client.get().getUI().write(builder.toString());
+		getUI().write(builder.toString());
+
+		return null;
 	}
 	
 }

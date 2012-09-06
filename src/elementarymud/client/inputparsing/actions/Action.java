@@ -1,7 +1,10 @@
 package elementarymud.client.inputparsing.actions;
 
+import elementarymud.client.UI;
+import elementarymud.client.ZoneObjects;
 import elementarymud.client.inputparsing.CommandScanner;
 import java.util.Set;
+import marauroa.common.game.RPAction;
 import marauroa.common.game.RPObject;
 
 /**
@@ -11,12 +14,28 @@ import marauroa.common.game.RPObject;
 public abstract class Action implements Cloneable {
 
 	private RPObject target = null;
+	private UI ui;
+	private ZoneObjects zoneObjects;
+
+	protected void init(ZoneObjects zoneObjects, UI ui) {
+		this.ui = ui;
+		this.zoneObjects = zoneObjects;
+	}
+
+	protected UI getUI() {
+		return ui;
+	}
+
+	protected ZoneObjects getZoneObjects() {
+		return zoneObjects;
+	}
+
 
 	public abstract Set<String> actionVerbs();
 
 	public abstract boolean configure(CommandScanner scanner);
 
-	public abstract void execute();
+	public abstract RPAction execute();
 
 	@Override
 	public Action clone() {

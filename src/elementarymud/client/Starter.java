@@ -1,5 +1,7 @@
 package elementarymud.client;
 
+import elementarymud.client.inputparsing.CommandInterpreter;
+import elementarymud.client.inputparsing.actions.ActionRepository;
 import java.io.IOException;
 import marauroa.client.BannedAddressException;
 import marauroa.client.LoginFailedException;
@@ -16,11 +18,57 @@ import marauroa.common.net.InvalidVersionException;
 public class Starter {
 
 	private static Logger log = Log4J.getLogger(Starter.class);
+	private static ZoneObjects zoneObjects;
+	private static Client client;
+	private static UI ui;
+	private static ActionRepository actions;
+
+	private static boolean initialized = false;
+	private static boolean started = false;
+
+	private Starter() {
+	}
+
+	protected static void initializeSingletons(UI ui) {
+		if (!initialized) {
+			zoneObjects = new ZoneObjects();
+			actions = new ActionRepository(zoneObjects, ui);
+			client = new Client(zoneObjects, ui, actions);
+			ui.setCommandInterpreter(new CommandInterpreter(zoneObjects, client, actions));
+
+			Starter.ui = ui;
+			initialized = true;
+		}
+	}
+
+	protected static void start() {
+		if (!started) {
+			client.start();
+			ui.start(zoneObjects.getMyCharacter().getName() + ">");
+			started = true;
+		}
+	}
+	
+	public static Client getClient() {
+		return client;
+	}
+
+	public static ZoneObjects getZoneObjects() {
+		return zoneObjects;
+	}	
+
+	public static ActionRepository getActionRepo() {
+		return actions;
+	}
 
 	/**
 	 * @param args 
 	 */
 	public static void main(String[] args) {
+		new Starter().startUp(args);
+	}	
+
+	private void startUp(String[] args) {
 		if (args.length < 4) {
 			printHelpAndExit();	
 		}
@@ -45,7 +93,20 @@ public class Starter {
 		}
 		log.info("Trying to connect to " + serveraddress + " at port " + port + " as " + username + "...");
 
-		Client client = Client.get();
+		UI ui = null;
+		switch (mode) {
+			case "terminal":
+				ui = new TerminalUI();
+				break;
+			case "testbot":
+				ui = new TestBot();
+				break;
+			default:
+				printHelpAndExit();
+				break;
+		}
+
+		initializeSingletons(ui);
 		try {
 			client.connect(serveraddress, port);
 			if (newUser) {
@@ -68,20 +129,8 @@ public class Starter {
 			System.exit(1);
 		}
 
-		UI ui = null;
-		switch (mode) {
-			case "terminal":
-				ui = new TerminalUI();
-				break;
-			case "testbot":
-				ui = new TestBot();
-				break;
-			default:
-				printHelpAndExit();
-				break;
-		}
-		client.start(ui);
-	}	
+		start();
+	}
 
 	private static void printHelpAndExit() {
 		log.info("Usage: java -jar simplemud.jar terminal|testbot"

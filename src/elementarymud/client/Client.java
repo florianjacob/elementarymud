@@ -1,5 +1,6 @@
 package elementarymud.client;
 
+import elementarymud.client.inputparsing.actions.ActionRepository;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -29,19 +30,17 @@ public class Client extends ClientFramework implements ActionListener {
 
 	private final PerceptionHandler handler;
 	private final PerceptionListener listener;
-	private static final Client instance = new Client();
 	private String[] availableCharacters;
-	private UI ui;
 	private final Timer timer;
+	private final ZoneObjects zoneObjects;
+	private final UI ui;
 	private static final Logger log = Log4J.getLogger(Client.class);
 
-	public static Client get() {
-		return instance;
-	}
-
-	private Client() {
+	protected Client(ZoneObjects zoneObjects, UI ui, ActionRepository actions) {
 		super("log4j.properties");
-		listener = new PerceptionListener();
+		this.zoneObjects = zoneObjects;
+		this.ui = ui;
+		listener = new PerceptionListener(zoneObjects, ui, actions);
 		handler = new PerceptionHandler(listener);
 	    timer = new Timer(300, this);
 		timer.setInitialDelay(500);
@@ -59,23 +58,15 @@ public class Client extends ClientFramework implements ActionListener {
 		return availableCharacters;
 	}
 
-	public UI getUI() {
-		return ui;
-	}
-
 	/**
-	 * Start the network loop of the client and make the UI visible and ready.
+	 * Start the network loop of the client.
 	 * This has to be called after the client.login() and client.chooseCharacter()
 	 * have been called to start the client event loop.
-	 * It repeatingly checks for new server messages and handles them,
-	 * and calls start() on the UI.
+	 * It repeatingly checks for new server messages and handles them.
 	 * 
-	 * @param ui the UI to send output to
 	 */
-	public void start(final UI ui) {
-		this.ui = ui;
+	public void start() {
 		timer.start();
-		ui.start();
 	}
 
 	/**
@@ -95,7 +86,7 @@ public class Client extends ClientFramework implements ActionListener {
 			throws TimeoutException, InvalidVersionException, BannedAddressException {
 		boolean successful = super.chooseCharacter(characterName);
 		if (successful) {
-			ZoneObjects.get().getMyCharacter().setName(characterName);
+			zoneObjects.getMyCharacter().setName(characterName);
 		}
 		return successful;
 	}
@@ -119,7 +110,7 @@ public class Client extends ClientFramework implements ActionListener {
 	@Override
 	protected void onPerception(MessageS2CPerception message) {
 		try {
-			handler.apply(message, ZoneObjects.get().getObjects());
+			handler.apply(message, zoneObjects.getInternalObjectsMap());
 		} catch (Exception e) {
 			// Something weird happened while applying perception
 			e.printStackTrace();

@@ -1,14 +1,12 @@
 package elementarymud.client.inputparsing.actions;
 
-import elementarymud.client.Client;
 import elementarymud.client.MyCharacter;
-import elementarymud.client.UI;
-import elementarymud.client.ZoneObjects;
 import elementarymud.client.inputparsing.CommandScanner;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import marauroa.common.game.RPAction;
 import marauroa.common.game.RPClass;
 import marauroa.common.game.RPObject;
 
@@ -19,15 +17,14 @@ import marauroa.common.game.RPObject;
 public class LookAction extends Action {
 
 	@Override
-	public void execute() {
-		UI ui = Client.get().getUI();
+	public RPAction execute() {
 		if (!hasTarget()) {
-			MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
+			MyCharacter myCharacter = getZoneObjects().getMyCharacter();
 			// just look around in the zone
 			RPObject zone = myCharacter.getZone();
 			StringBuilder output = new StringBuilder();
 			output.append("You are in ").append(zone.get("description")).append(".");
-			List<RPObject> exits = ZoneObjects.get().getExits();
+			List<RPObject> exits = getZoneObjects().getExits();
 			if (!exits.isEmpty()) {
 				output.append("\n");
 				if (exits.size() == 1) {
@@ -39,7 +36,7 @@ public class LookAction extends Action {
 				output.append(".");
 			}
 
-			List<RPObject> otherPlayers = ZoneObjects.get().getPlayersExcluding(myCharacter.getCharacter());
+			List<RPObject> otherPlayers = getZoneObjects().getPlayersExcluding(myCharacter.getCharacter());
 
 			if (!otherPlayers.isEmpty()) {
 				output.append("\n");
@@ -52,7 +49,7 @@ public class LookAction extends Action {
 				output.append(".");
 			}
 
-			List<RPObject> entities = ZoneObjects.get().getEntities();
+			List<RPObject> entities = getZoneObjects().getEntities();
 			if (!entities.isEmpty()) {
 				output.append("\n");
 				output.append("You see ");
@@ -60,7 +57,7 @@ public class LookAction extends Action {
 				output.append(".");
 			}
 
-			ui.writeln(output.toString());
+			getUI().writeln(output.toString());
 		} else {
 			// look at something specific
 			RPObject target = getTarget();
@@ -74,8 +71,10 @@ public class LookAction extends Action {
 				out.append(target.get("description"));
 			}
 			out.append(".");
-			ui.writeln(out.toString());
+			getUI().writeln(out.toString());
 		}
+
+		return null;
 	}
 
 	/**
@@ -133,6 +132,7 @@ public class LookAction extends Action {
 	public Set<String> actionVerbs() {
 		Set<String> verbs = new HashSet<>();
 		verbs.add("look");	
+		verbs.add("l");
 		return verbs;
 	}
 

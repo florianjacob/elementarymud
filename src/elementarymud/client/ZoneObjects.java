@@ -18,20 +18,11 @@ public class ZoneObjects {
 	private final Map<RPObject.ID, RPObject> zoneObjects = new HashMap<>();
 	private final MyCharacter myCharacter = new MyCharacter();
 
-	private static final ZoneObjects instance = new ZoneObjects();
-
-	public static ZoneObjects get() {
-		return instance;
-	}
-
-	private ZoneObjects() {
-	}
-
 	public MyCharacter getMyCharacter() {
 		return myCharacter;
 	}
 
-	public Map<RPObject.ID, RPObject> getObjects() {
+	public Map<RPObject.ID, RPObject> getInternalObjectsMap() {
 		return zoneObjects;
 	}
 

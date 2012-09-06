@@ -1,6 +1,5 @@
 package elementarymud.client.inputparsing.actions;
 
-import elementarymud.client.Client;
 import elementarymud.client.inputparsing.CommandScanner;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,17 +26,18 @@ public class DropAction extends Action {
 			setTarget(bagItem);	
 			return true;
 		} else {
+			getUI().writeln("Usage: drop <item in your bag>");
 			return false;
 		}
 	}
 
 	@Override
-	public void execute() {
+	public RPAction execute() {
 		RPAction action = new RPAction();
 		action.put("verb", "drop");
 		action.put("target", getTargetID().getObjectID());
 
-		Client.get().send(action);
+		return action;
 	}
 	
 }

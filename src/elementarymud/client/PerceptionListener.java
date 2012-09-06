@@ -1,6 +1,7 @@
 package elementarymud.client;
 
-import elementarymud.client.inputparsing.CommandInterpreter;
+import elementarymud.client.inputparsing.actions.ActionRepository;
+import elementarymud.client.inputparsing.actions.LookAction;
 import marauroa.client.net.IPerceptionListener;
 import marauroa.common.Log4J;
 import marauroa.common.Logger;
@@ -12,28 +13,38 @@ import marauroa.common.net.message.MessageS2CPerception;
 public class PerceptionListener implements IPerceptionListener {
 	private static final Logger log = Log4J.getLogger(PerceptionListener.class);
 
+	private final ZoneObjects zoneObjects;
+	private final MyCharacter myCharacter;
+	private final UI ui;
+	private final ActionRepository actions;
+
+	public PerceptionListener(ZoneObjects zoneObjects, UI ui, ActionRepository actions) {
+		this.zoneObjects = zoneObjects;
+		this.myCharacter = zoneObjects.getMyCharacter();
+		this.ui = ui;
+		this.actions = actions;
+	}
+
 	@Override
 	public boolean onAdded(final RPObject object) {
-		MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
 		log.info("onAdded: " + object);
 		if (myCharacter.isCharacter(object)) {
 			myCharacter.setCharacter(object);
 		} else if (object.instanceOf(RPClass.getRPClass("zone"))) {
 			myCharacter.setZone(object);
 		} else if (object.instanceOf(RPClass.getRPClass("character")) && !myCharacter.hasChangedZone()) {
-			Client.get().getUI().writeln(object.get("name") + " entered the " + myCharacter.getZone().get("name") + ".");
+			ui.writeln(object.get("name") + " entered the " + myCharacter.getZone().get("name") + ".");
 		}
 		return false;
 	}
 
 	@Override
 	public boolean onModifiedAdded(final RPObject object, final RPObject changes) {
-		MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
 		log.info("onModifiedAdded: " + object + " changes: " + changes);
 		for (RPEvent event : changes.events()) {
 			if (event.getName().equals("public_text")) {
 				String prefix = myCharacter.isCharacter(object) ? "You say: " : object.get("name") + " says: ";
-				Client.get().getUI().writeln(prefix + event.get("text"));
+				ui.writeln(prefix + event.get("text"));
 			}
 		}
 		return false;
@@ -49,8 +60,9 @@ public class PerceptionListener implements IPerceptionListener {
 	public boolean onDeleted(final RPObject object) {
 		log.info("onDeleted: " + object);
 		if (object.instanceOf(RPClass.getRPClass("character"))) {
-			RPObject character = ZoneObjects.get().getObject(object.getID());
-			Client.get().getUI().writeln(character.get("name") + " left the " + ZoneObjects.get().getMyCharacter().getZone().get("name") + ".");
+			RPObject leavingCharacter = zoneObjects.getObject(object.getID());
+			ui.writeln(leavingCharacter.get("name") + " left the "
+					+ myCharacter.getZone().get("name") + ".");
 		}
 		return false;
 	}
@@ -61,8 +73,6 @@ public class PerceptionListener implements IPerceptionListener {
 		// but this happens after onAdded() was already called with our RPObject and all public attributes
 		// added and deleted don't contain any public attributes except id and zone
 		// they only contain the private added and deleted attributes / events
-		UI ui = Client.get().getUI();
-		MyCharacter myCharacter = ZoneObjects.get().getMyCharacter();
 		RPObject.ID id = null;
 		if (added != null) {
 			id = added.getID();
@@ -79,13 +89,13 @@ public class PerceptionListener implements IPerceptionListener {
 		}
 
 		if (id != null) {
-			ZoneObjects.get().receivedMyCharacter(id);
+			zoneObjects.receivedMyCharacter(id);
 			log.info("onMyRPObject: added: " + added + " deleted: " + deleted);
 		}
 
 		if (myCharacter.hasChangedZone()) {
 			// execute a look command everytime we get in a new zone and the zone is synced completely
-			CommandInterpreter.onInput("look");
+			actions.getAction("look").execute();
 			myCharacter.zoneChangeHandled();
 		}
 		return false;

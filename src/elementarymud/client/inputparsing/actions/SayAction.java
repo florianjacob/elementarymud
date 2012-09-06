@@ -1,6 +1,5 @@
 package elementarymud.client.inputparsing.actions;
 
-import elementarymud.client.Client;
 import elementarymud.client.inputparsing.CommandScanner;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +16,7 @@ class SayAction extends Action {
 	private String wordsToSpeak;
 
 	@Override
-	public void execute() {
+	public RPAction execute() {
 		RPAction action = new RPAction();
 		action.put("verb", usedVerb);
 
@@ -26,7 +25,7 @@ class SayAction extends Action {
 		}
 		action.put("words", wordsToSpeak);
 
-		Client.get().send(action);
+		return action;
 	}
 
 	@Override
@@ -50,6 +49,7 @@ class SayAction extends Action {
 				wordsToSpeak = scanner.getRemainder();
 				return true;
 			} else {
+				getUI().writeln("Usage: tell <playername> <message>");
 				return false;
 			}
 		} else {

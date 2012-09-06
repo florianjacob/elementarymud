@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import marauroa.common.game.RPObject;
-import marauroa.common.game.RPSlot;
 
 /**
  *
@@ -21,6 +20,9 @@ public class CommandScanner {
 
 	private static final Set<String> stopWords = new HashSet<>();
 	private static final Pattern number = Pattern.compile("[0-9]+");
+
+	private final ZoneObjects zoneObjects;
+	private final ActionRepository actions;
 
 	private String verb;
 	private String rawInputWithoutVerb;
@@ -37,12 +39,14 @@ public class CommandScanner {
 		stopWords.add("to");
 	}
 
-	public CommandScanner(String rawInput) {
+	public CommandScanner(final ZoneObjects zoneObjects, final ActionRepository actions,
+			String rawInput) {
+		this.zoneObjects = zoneObjects;
+		this.actions = actions;
 		input = new LinkedList(Arrays.asList(rawInput.split(" ")));
 	}
 
-	protected Action firstWordAction() {
-		ActionRepository actions = ActionRepository.get();
+	public Action firstWordAction() {
 		Action action = null; 
 
 		if (!input.isEmpty()) {
@@ -50,7 +54,7 @@ public class CommandScanner {
 			action = actions.getAction(verb);	
 
 			if (action == null) {
-				RPObject bestHit = getBestHitFor(verb, ZoneObjects.get().getExits());
+				RPObject bestHit = getBestHitFor(verb, zoneObjects.getExits());
 				if (bestHit != null) {
 					// we allow to enter direction words directly without a go infront of it
 					action = actions.getAction("go");
@@ -77,19 +81,19 @@ public class CommandScanner {
 	}
 
 	public RPObject scanForExit() {
-		return scanIn(ZoneObjects.get().getExits());
+		return scanIn(zoneObjects.getExits());
 	}
 
 	public RPObject scanForPlayer() {
-		return scanIn(ZoneObjects.get().getPlayers());
+		return scanIn(zoneObjects.getPlayers());
 	}
 	
 	public RPObject scanForBagItem() {
-		return scanIn(ZoneObjects.get().getMyCharacter().getCharacter().getSlot("bag"));
+		return scanIn(zoneObjects.getMyCharacter().getCharacter().getSlot("bag"));
 	}
 
 	public RPObject scanForRPObject() {
-		return scanIn(ZoneObjects.get().getAllObjects());
+		return scanIn(zoneObjects.getAllObjects());
 	}
 
 	public String getInputWithoutVerb() {
