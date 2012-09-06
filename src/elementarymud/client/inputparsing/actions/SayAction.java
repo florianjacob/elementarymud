@@ -22,9 +22,9 @@ class SayAction extends Action {
 		action.put("verb", usedVerb);
 
 		if (hasTarget()) {
-			action.put("object", getTargetID().getObjectID());
+			action.put("target", getTargetID().getObjectID());
 		}
-		action.put("remainder", wordsToSpeak);
+		action.put("words", wordsToSpeak);
 
 		Client.get().send(action);
 	}

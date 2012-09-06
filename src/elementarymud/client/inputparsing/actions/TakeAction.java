@@ -35,7 +35,7 @@ public class TakeAction extends Action {
 	public void execute() {
 		RPAction action = new RPAction();
 		action.put("verb", "take");
-		action.put("object", getTargetID().getObjectID());
+		action.put("target", getTargetID().getObjectID());
 
 		Client.get().send(action);
 	}

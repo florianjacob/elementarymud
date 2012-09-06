@@ -18,7 +18,7 @@ class MoveAction extends Action {
 		// unknown local command, sending to server..
 		RPAction action = new RPAction();
 		action.put("verb", "go");
-		action.put("object", getTarget().get("name"));
+		action.put("target", getTarget().get("name"));
 		Client.get().send(action);
 	}
 

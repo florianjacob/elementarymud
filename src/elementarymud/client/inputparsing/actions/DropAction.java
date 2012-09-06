@@ -35,7 +35,7 @@ public class DropAction extends Action {
 	public void execute() {
 		RPAction action = new RPAction();
 		action.put("verb", "drop");
-		action.put("object", getTargetID().getObjectID());
+		action.put("target", getTargetID().getObjectID());
 
 		Client.get().send(action);
 	}

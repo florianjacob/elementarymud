@@ -95,22 +95,22 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 
 			switch (action.get("verb")) {
 				case "say":
-					character.say(action.get("remainder"));
+					character.say(action.get("words"));
 					break;
 				case "tell":
 				case "sayto":
-					objectId = Integer.parseInt(action.get("object"));
+					objectId = Integer.parseInt(action.get("target"));
 					targetId = new RPObject.ID(objectId, zoneId);
 					target = character.getZone().get(targetId);
 					if (target == null) {
 						character.sendPrivateText("Your target isn't here.");
 					} else {
 						//TODO: proper targeted speaking here!
-						character.say("to " + target.get("name") + ": " + action.get("remainder"));
+						character.say("to " + target.get("name") + ": " + action.get("words"));
 					}
 					break;
 				case "go":
-					String exit = action.get("object");
+					String exit = action.get("target");
 					RPZone oldZone = (RPZone) character.getZone();
 					if (!oldZone.hasExit(exit)) {
 						character.sendPrivateText("Exit " + exit + " doesn't exist.");
@@ -119,7 +119,7 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 					world.changeZone(oldZone.getExit(exit).getTargetZoneId(), caster);
 					break;
 				case "take":
-					objectId = Integer.parseInt(action.get("object"));
+					objectId = Integer.parseInt(action.get("target"));
 					targetId = new RPObject.ID(objectId, zoneId);
 					target = character.getZone().get(targetId);
 					if (target == null) {
@@ -132,7 +132,7 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 					}
 					break;
 				case "drop":
-					objectId = Integer.parseInt(action.get("object"));
+					objectId = Integer.parseInt(action.get("target"));
 					// the targetId is a SlodID, so the zoneID part (set to an empty string here) will be ignored anyway
 					targetId = new RPObject.ID(objectId, "");
 					target = character.getFromInventory(targetId);
@@ -145,6 +145,7 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 					}
 					break;
 				case "desc":
+					// not reachable at the moment
 					world.modify(caster);
 					character.setDescription(action.get("remainder"));
 					break;
