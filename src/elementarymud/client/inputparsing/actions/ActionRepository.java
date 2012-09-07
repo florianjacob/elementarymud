@@ -23,6 +23,7 @@ public class ActionRepository {
 		registerAction(new TakeAction());
 		registerAction(new DropAction());
 		registerAction(new InventoryAction());
+		registerAction(new SerializeAction());
 	}
 
 	private void registerAction(final Action action) {

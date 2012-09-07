@@ -1,12 +1,14 @@
 package elementarymud.client.inputparsing.actions;
 
+import elementarymud.client.MockUI;
+import elementarymud.client.PopulatedZoneObjects;
 import elementarymud.client.UI;
 import elementarymud.client.ZoneObjects;
-import elementarymud.client.inputparsing.CommandInterpreter;
 import elementarymud.client.inputparsing.CommandScanner;
+import marauroa.common.game.RPAction;
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -16,32 +18,12 @@ public class TakeActionTest {
 
 	private static ZoneObjects zoneObjects;
 	private static ActionRepository actions;
-	private static UI ui;
+	private static MockUI ui;
 
 	@BeforeClass
 	public static void setUp() {
-		zoneObjects = new ZoneObjects();	
-		ui = new UI() {
-
-			@Override
-			public void setCommandInterpreter(CommandInterpreter interpreter) {
-			}
-
-			@Override
-			public void write(String text) {
-				System.out.print(text);
-			}
-
-			@Override
-			public void writeln(String text) {
-				write(text + "\n");
-			}
-
-			@Override
-			public void start(String prompt) {
-			}
-
-		};
+		zoneObjects = new PopulatedZoneObjects();	
+		ui = new MockUI();
 		actions = new ActionRepository(zoneObjects, ui);
 	}
 
@@ -57,16 +39,30 @@ public class TakeActionTest {
 	public void testNoTarget() {
 		CommandScanner scanner = new CommandScanner(zoneObjects, actions, "take");
 		Action action = scanner.firstWordAction();
-		Assert.assertFalse("Action wrongly configured but still returns true",
-				action.configure(scanner));
+		ui.addExpectedLine("Usage: take <object>\n");
+		Assert.assertFalse("TakeAction with nonexisting target returns true", action.configure(scanner));
 	}
+
 
 	@Test
 	public void testWrongTarget() {
 		CommandScanner scanner = new CommandScanner(zoneObjects, actions, "take the blablub");
 		Action action = scanner.firstWordAction();
+		ui.addExpectedLine("Usage: take <object>\n");
 		Assert.assertFalse("TakeAction with nonexisting target returns true", action.configure(scanner));
 
+	}
+
+	@Test
+	public void testTakeItem() {
+		CommandScanner scanner = new CommandScanner(zoneObjects, actions, "take lightpost");
+		Action action = scanner.firstWordAction();
+		boolean successful = action.configure(scanner);
+		Assert.assertTrue("TakeAction with existing target returns false", successful);
+
+		RPAction rpAction = action.execute();
+		Assert.assertEquals(rpAction.get("verb"), "take");
+		Assert.assertEquals(rpAction.get("target"), "34");
 	}
 	
 }

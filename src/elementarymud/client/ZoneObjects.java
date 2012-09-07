@@ -33,7 +33,7 @@ public class ZoneObjects {
 	public Collection<RPObject> getAllObjects() {
 		return Collections.unmodifiableCollection(zoneObjects.values());
 	}
-	
+
 	public List<RPObject> getExits() {
 		ArrayList<RPObject> exits = new ArrayList<>(zoneObjects.size());
 		for (RPObject object : zoneObjects.values()) {

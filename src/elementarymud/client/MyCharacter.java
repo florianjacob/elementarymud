@@ -1,5 +1,7 @@
 package elementarymud.client;
 
+import marauroa.common.Log4J;
+import marauroa.common.Logger;
 import marauroa.common.game.RPObject;
 
 /**
@@ -13,6 +15,8 @@ import marauroa.common.game.RPObject;
  * @author raignarok
  */
 public class MyCharacter {
+	private static final Logger log = Log4J.getLogger(MyCharacter.class);
+
 	private String name;
 	private RPObject myCharacter;
 	private RPObject currentZoneObject;
@@ -75,6 +79,8 @@ public class MyCharacter {
 		if (isCharacter(newCharacter) && this.myCharacter != newCharacter) {
 			myCharacter = newCharacter;
 			name = newCharacter.get("name");
+		} else {
+			log.warn("Character not set because it's not our character.");
 		}
 	}
 
