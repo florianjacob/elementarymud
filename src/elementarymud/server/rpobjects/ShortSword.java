@@ -31,4 +31,9 @@ public class ShortSword extends MudRPObject {
 	public static String getRPClassName() {
 		return RPCLASSNAME;
 	}
+
+		@Override
+	public boolean isTakeableBy(Character character) {
+		return true;
+	}
 }

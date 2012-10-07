@@ -13,7 +13,7 @@ public class Torch extends MudRPObject {
 	private static final Logger log = Log4J.getLogger(Torch.class);
 
 	private static final String RPCLASSNAME = "torch";
-	
+
 	public Torch() {
 		super("torch", "an unlit torch");
 		setRPClass(RPCLASSNAME);
@@ -31,4 +31,9 @@ public class Torch extends MudRPObject {
 	public static String getRPClassName() {
 		return RPCLASSNAME;
 	}	
+
+	@Override
+	public boolean isTakeableBy(Character character) {
+		return true;
+	}
 }

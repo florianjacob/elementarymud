@@ -48,18 +48,6 @@ public class Starter {
 			started = true;
 		}
 	}
-	
-	public static Client getClient() {
-		return client;
-	}
-
-	public static ZoneObjects getZoneObjects() {
-		return zoneObjects;
-	}	
-
-	public static ActionRepository getActionRepo() {
-		return actions;
-	}
 
 	/**
 	 * @param args 

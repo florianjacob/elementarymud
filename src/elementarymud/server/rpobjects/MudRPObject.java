@@ -41,6 +41,10 @@ public class MudRPObject extends RPObject {
 		super(template);
 	}
 
+	public boolean isTakeableBy(Character character) {
+		return false;
+	}
+
 	public static String getRPClassName() {
 		return RPCLASSNAME;
 	}

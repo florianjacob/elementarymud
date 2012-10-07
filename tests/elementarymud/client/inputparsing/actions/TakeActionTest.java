@@ -2,7 +2,6 @@ package elementarymud.client.inputparsing.actions;
 
 import elementarymud.client.MockUI;
 import elementarymud.client.PopulatedZoneObjects;
-import elementarymud.client.UI;
 import elementarymud.client.ZoneObjects;
 import elementarymud.client.inputparsing.CommandScanner;
 import marauroa.common.game.RPAction;

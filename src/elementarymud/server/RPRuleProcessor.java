@@ -1,6 +1,7 @@
 package elementarymud.server;
 
 import elementarymud.server.rpobjects.Character;
+import elementarymud.server.rpobjects.MudRPObject;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -124,6 +125,8 @@ public class RPRuleProcessor implements IRPRuleProcessor {
 					target = character.getZone().get(targetId);
 					if (target == null) {
 						character.sendPrivateText("Your target doesn't exist.");
+					} else if(!((MudRPObject) target).isTakeableBy(character)) {
+						character.sendPrivateText("You can't put that into your inventory.");
 					} else {
 						world.modify(character);
 						world.modify(target);
