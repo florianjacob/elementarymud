@@ -1,0 +1,8 @@
+Files in ElementaryMUD are licensed under the General Public License version 3,
+the text of which can be found in COPYING-GPL, or any later version of the GPL,
+unless otherwise noted.
+
+Licensing of used libraries:
+	* arianne rpg framework: GPLv2
+
+Attribution information for ElementaryMUD is contained in the AUTHORS file.
